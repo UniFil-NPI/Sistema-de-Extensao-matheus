@@ -9,6 +9,7 @@ class AlunoController extends Controller
 {
     public function index()
     {
-        return Aluno::all();
+        $alunos = Aluno::all();
+        return response()->json($alunos);
     }
 }

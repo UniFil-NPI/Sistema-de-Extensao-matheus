@@ -6,6 +6,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\RegisterAlunoController;
+use App\Http\Controllers\AlunoController;
 
 // Rota principal
 Route::get('/', function () {
@@ -22,18 +23,21 @@ Route::get('/loginProfessor', function () {
     return Inertia::render('LoginProfessor');
 })->name('loginProfessor');
 
-Route::post('/login/professor', [LoginController::class, 'loginProfessor'])->name('loginProfessor.post');
+Route::post('/loginProfessor', [LoginController::class, 'loginProfessor'])->name('loginProfessor.post');
 
 // Nova rota para a página ProfessorHome
-Route::get('/professor/home', function () {
+Route::get('/professorHome', function () {
     return Inertia::render('ProfessorHome');
-})->middleware(['auth'])->name('professorHome');
+})->name('professorHome');
 
 // Rota de registro para alunos
 Route::get('/registerAluno', function () {
     return Inertia::render('registerAluno');
 })->name('registerAluno');
-Route::post('/register/aluno', [registerAlunoController::class, 'store'])->name('RegisterAluno.store');
+Route::post('/register/aluno', [RegisterAlunoController::class, 'store'])->name('RegisterAluno.store');
+
+// Rota para buscar alunos
+Route::get('/alunos', [AlunoController::class, 'index'])->name('alunos.index');
 
 // Rota do dashboard
 Route::get('/dashboard', function () {

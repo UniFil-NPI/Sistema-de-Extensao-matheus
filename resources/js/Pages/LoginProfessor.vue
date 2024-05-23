@@ -15,17 +15,21 @@
     </div>
 </template>
 
-<script setup>
-import { ref } from 'vue';
+<script setup> 
+
 import { useForm } from '@inertiajs/vue3';
 
 const form = useForm({
     email: '',
-    senha: '',
+    password: '',
 });
 
 const submit = () => {
-    form.post(route('loginProfessor.post'));
+    form.post(route('loginProfessor.post'), {
+        onSuccess: () => {
+            window.location.href = route('professorHome');
+        },
+    });
 };
 </script>
 
@@ -59,7 +63,7 @@ body {
     display: block;
     margin: 0 auto 20px;
     width: 250px;
-    height:auto
+    height: auto;
 }
 
 form {

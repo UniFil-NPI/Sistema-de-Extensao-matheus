@@ -22,7 +22,7 @@
             <!-- Conteúdo principal -->
             <div class="main-content">
                 <h1>Bem-vindo ao Sistema de Extensão Curricular</h1>
-                <p>Este é um layout simples inspirado no Google Classroom.</p>
+                <br>
 
                 <!-- Formulário de pesquisa -->
                 <div class="search-form">
@@ -36,11 +36,24 @@
                 <!-- Lista de alunos -->
                 <div v-if="showAlunos" class="alunos-list">
                     <h2>Lista de Alunos</h2>
-                    <ul>
-                        <li v-for="aluno in alunos" :key="aluno.id">
-                            {{ aluno.nome }} - {{ aluno.email }} - {{ aluno.telefone }}
-                        </li>
-                    </ul>
+                    <table class="alunos-table">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>Telefone</th>
+                                <th>Tipo de Extensão</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="aluno in filteredAlunos" :key="aluno.id">
+                                <td>{{ aluno.nome }}</td>
+                                <td>{{ aluno.email }}</td>
+                                <td>{{ aluno.telefone }}</td>
+                                <td>{{ aluno.tipoExtensao }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -48,7 +61,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
 
 const search = ref('');
@@ -60,10 +73,21 @@ const searchStudent = () => {
     console.log(`Pesquisando aluno: ${search.value}`);
 };
 
+// Computed property para filtrar alunos com base na pesquisa
+const filteredAlunos = computed(() => {
+    if (!search.value) {
+        return alunos.value;
+    }
+    return alunos.value.filter(aluno => 
+        aluno.nome.toLowerCase().includes(search.value.toLowerCase())
+    );
+});
+
 const fetchAlunos = async () => {
     try {
-        const response = await axios.get('/api/alunos');
+        const response = await axios.get('/alunos');
         alunos.value = response.data;
+        console.log(alunos.value); // Log para depuração
     } catch (error) {
         console.error('Erro ao buscar alunos:', error);
     }
@@ -166,5 +190,22 @@ body {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+}
+
+/* Estilos da tabela */
+.alunos-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.alunos-table th, .alunos-table td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: left;
+}
+
+.alunos-table th {
+    background-color: #f2f2f2;
 }
 </style>
