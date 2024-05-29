@@ -46,9 +46,16 @@ Route::get('/dashboard', function () {
 
 // Rotas de perfil
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+
+
 });
+
+Route::get('/alunos', [AlunoController::class, 'index']);
+Route::get('/alunos/{id}', [AlunoController::class, 'show']);
+Route::put('/alunos/{id}', [AlunoController::class, 'update']);
 
 require __DIR__.'/auth.php';

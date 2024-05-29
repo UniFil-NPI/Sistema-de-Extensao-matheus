@@ -17,20 +17,18 @@ class RegisterAlunoController extends Controller
         $request->validate([
             'nome' => 'required|string|max:255',
             'email' => 'required|email|unique:alunos,email',
-            'ddd' => 'required|string|max:3',
-            'telefone' => 'required|string|max:15',
+            'matricula' => 'required|string|max:15',
             'tipoExtensao' => 'required|string|max:255',
         ]);
 
         $user = Aluno::create([
             'nome' => $request->nome,
             'email' => $request->email,
-            'ddd' => $request->ddd,
-            'telefone' => $request->telefone,
+            'matricula' => $request->matricula,
             'tipoExtensao' => $request->tipoExtensao,
         ]);
         
-        //return redirect()->route('registerAluno')->with('success', 'Aluno cadastrado com sucesso!');
+       
         return response()->json(['message' => 'Aluno cadastrado com sucesso!']);
 
     }

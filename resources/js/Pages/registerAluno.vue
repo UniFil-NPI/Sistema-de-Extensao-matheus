@@ -9,10 +9,9 @@
                 <label for="email">E-mail: <span class="required">*</span></label>
                 <input type="email" id="email" v-model="form.email" required>
 
-                <label for="telefone">Telefone / Whatsapp: <span class="required">*</span></label>
-                <div class="telefone-container">
-                    <input type="text" id="ddd" v-model="form.ddd" placeholder="DDD" required>
-                    <input type="text" id="telefone" v-model="form.telefone" placeholder="Telefone" required>
+                <label for="matricula">Matrícula: <span class="required">*</span></label>
+                <div class="matricula-container">
+                    <input type="text" id="matricula" v-model="form.matricula" placeholder="Matricula" required>
                 </div>
 
                 <label for="tipo-extensao">Tipo de Extensão: <span class="required">*</span></label>
@@ -35,13 +34,10 @@ import { useForm } from '@inertiajs/vue3';
 const form = useForm({
     nome: '',
     email: '',
-    ddd: '',
-    telefone: '',
+    matricula: '',
     tipoExtensao: '',
 });
 
-//const submit = () => {
-    //form.post(route('RegisterAluno.store')) };;
 
     const message = ref('');
 
@@ -118,14 +114,7 @@ input, select {
     width: calc(100% - 20px); /* Ajuste para considerar o padding */
 }
 
-.telefone-container {
-    display: flex;
-    gap: 10px;
-}
 
-.telefone-container input {
-    width: calc(50% - 10px); /* Ajustado para gap de 10px */
-}
 
 button {
     background-color: #333;

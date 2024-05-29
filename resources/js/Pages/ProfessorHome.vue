@@ -41,19 +41,46 @@
                             <tr>
                                 <th>Nome</th>
                                 <th>Email</th>
-                                <th>Telefone</th>
+                                <th>Matricula</th>
                                 <th>Tipo de Extensão</th>
+                                <th>Ações</th> <!-- Adicionada coluna Ações -->
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="aluno in filteredAlunos" :key="aluno.id">
                                 <td>{{ aluno.nome }}</td>
                                 <td>{{ aluno.email }}</td>
-                                <td>{{ aluno.telefone }}</td>
+                                <td>{{ aluno.matricula }}</td>
                                 <td>{{ aluno.tipoExtensao }}</td>
+                                <td>
+                                    <button @click="editAluno(aluno)">Editar <i class="pi pi-pen-to-square"></i></button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
+                </div>
+            </div>
+
+            <!-- Modal de Edição -->
+            <div v-if="isEditModalOpen" class="modal">
+                <div class="modal-content">
+                    <span class="close" @click="closeEditModal">&times;</span>
+                    <h2>Editar Aluno</h2>
+                    <form @submit.prevent="updateAluno">
+                        <label for="nome">Nome:</label>
+                        <input type="text" id="nome" v-model="currentAluno.nome" required>
+
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" v-model="currentAluno.email" required>
+
+                        <label for="matricula">Matricula:</label>
+                        <input type="text" id="matricula" v-model="currentAluno.matricula" required>
+
+                        <label for="tipoExtensao">Tipo de Extensão:</label>
+                        <input type="text" id="tipoExtensao" v-model="currentAluno.tipoExtensao" required>
+
+                        <button type="submit">Salvar</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -63,10 +90,13 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
+import 'primeicons/primeicons.css'
 
 const search = ref('');
 const showAlunos = ref(false);
 const alunos = ref([]);
+const isEditModalOpen = ref(false);
+const currentAluno = ref({});
 
 const searchStudent = () => {
     // Lógica de pesquisa de aluno
@@ -75,21 +105,47 @@ const searchStudent = () => {
 
 // Computed property para filtrar alunos com base na pesquisa
 const filteredAlunos = computed(() => {
-    if (!search.value) {
-        return alunos.value;
-    }
-    return alunos.value.filter(aluno => 
-        aluno.nome.toLowerCase().includes(search.value.toLowerCase())
+    let filteredList = alunos.value;
+
+
+    if (search.value) {
+    filteredList = filteredList.filter(aluno =>
+      aluno.nome.toLowerCase().includes(search.value.toLowerCase())
     );
+  }
+
+  return filteredList.sort((a, b) => {
+    return a.nome.localeCompare(b.nome);
+  });
 });
 
 const fetchAlunos = async () => {
     try {
-        const response = await axios.get('/alunos');
+        const response = await axios.get('/alunos'); // Verifique se está apontando para /api/alunos
         alunos.value = response.data;
         console.log(alunos.value); // Log para depuração
     } catch (error) {
         console.error('Erro ao buscar alunos:', error);
+    }
+};
+
+const editAluno = (aluno) => {
+    currentAluno.value = { ...aluno };
+    isEditModalOpen.value = true;
+};
+
+const closeEditModal = () => {
+    isEditModalOpen.value = false;
+    currentAluno.value = {};
+};
+
+const updateAluno = async () => {
+    try {
+        await axios.put(`/alunos/${currentAluno.value.id}`, currentAluno.value);
+        await fetchAlunos(); // Atualiza a lista de alunos após a edição
+        closeEditModal();
+    } catch (error) {
+        console.error('Erro ao atualizar aluno:', error);
     }
 };
 
@@ -207,5 +263,33 @@ body {
 
 .alunos-table th {
     background-color: #f2f2f2;
+}
+
+/* Estilos do modal */
+.modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    cursor: pointer;
 }
 </style>
