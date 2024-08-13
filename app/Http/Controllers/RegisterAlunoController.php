@@ -5,10 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Aluno;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-
-
 
 class RegisterAlunoController extends Controller
 {
@@ -21,15 +17,13 @@ class RegisterAlunoController extends Controller
             'tipoExtensao' => 'required|string|max:255',
         ]);
 
-        $user = Aluno::create([
+        Aluno::create([
             'nome' => $request->nome,
             'email' => $request->email,
             'matricula' => $request->matricula,
             'tipoExtensao' => $request->tipoExtensao,
         ]);
-        
-       
-        return response()->json(['message' => 'Aluno cadastrado com sucesso!']);
 
+        return redirect()->route('alunoHome');
     }
 }

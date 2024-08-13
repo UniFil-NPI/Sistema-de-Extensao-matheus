@@ -23,9 +23,6 @@
                 <h1>Bem-vindo ao Sistema de Extensão Curricular</h1>
                 <br>
 
-                <!-- Botão para criar nova atividade -->
-                <button @click="showCreateModal = true" class="btn-criar-atividade">Criar Nova Atividade</button>
-                
                 <!-- Lista de atividades -->
                 <div v-if="showAtividades" class="atividades-list">
                     <h2>Lista de Atividades</h2>
@@ -47,39 +44,10 @@
                     <h2>{{ currentAtividade.titulo }}</h2>
                     <p>{{ currentAtividade.descricao }}</p>
                     <p>Data de Entrega: {{ formatDate(currentAtividade.dataEntrega) }}</p>
-                    <!-- Remover o campo de link para o professor -->
-                    <div v-if="isAluno">
-                        <form @submit.prevent="submitLink">
-                            <label for="link">Link:</label>
-                            <input type="url" id="link" v-model="link" required>
-                            <button type="submit">Enviar</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Modal para criar nova atividade -->
-            <div v-if="showCreateModal" class="modal">
-                <div class="modal-content">
-                    <span class="close" @click="closeCreateModal">&times;</span>
-                    <h2>Criar Nova Atividade</h2>
-                    <form @submit.prevent="createAtividade" class="form-container">
-                        <div class="form-group">
-                            <label for="titulo">Título:</label>
-                            <input type="text" id="titulo" v-model="novaAtividade.titulo" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="descricao">Descrição:</label>
-                            <textarea id="descricao" v-model="novaAtividade.descricao" required></textarea>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="dataEntrega">Data de Entrega:</label>
-                            <input type="date" id="dataEntrega" v-model="novaAtividade.dataEntrega" required>
-                        </div>
-
-                        <button type="submit" class="submit-btn">Criar Atividade</button>
+                    <form @submit.prevent="submitLink">
+                        <label for="link">Link:</label>
+                        <input type="url" id="link" v-model="link" required>
+                        <button type="submit">Enviar</button>
                     </form>
                 </div>
             </div>
@@ -94,79 +62,59 @@ import axios from 'axios';
 const showAtividades = ref(false);
 const atividades = ref([]);
 const isAtividadeModalOpen = ref(false);
-const showCreateModal = ref(false);
 const currentAtividade = ref({});
 const link = ref('');
-const novaAtividade = ref({
-    titulo: '',
-    descricao: '',
-    dataEntrega: ''
-});
 
-// Variável para determinar se o usuário é aluno ou professor
-const isAluno = ref(false); // Alterar conforme necessário
-
+// Função para buscar as atividades do backend
 const fetchAtividades = async () => {
     try {
         const response = await axios.get('/atividades');
         atividades.value = response.data;
+        console.log('Atividades:', atividades.value); // Verifique os dados retornados
     } catch (error) {
         console.error('Erro ao buscar atividades:', error);
     }
 };
 
+// Função para abrir o modal da atividade
 const openAtividadeModal = (atividade) => {
     currentAtividade.value = { ...atividade };
     isAtividadeModalOpen.value = true;
 };
 
+// Função para fechar o modal da atividade
 const closeAtividadeModal = () => {
     isAtividadeModalOpen.value = false;
     currentAtividade.value = {};
     link.value = '';
 };
 
+// Função para submeter o link e marcar a atividade como concluída
 const submitLink = async () => {
     try {
+        // Envia o link para o backend (substitua '/atividade/{id}/submeter-link' com a rota correta)
         await axios.post(`/atividades/${currentAtividade.value.id}/submeter-link`, { link: link.value });
 
+        // Marca a atividade como concluída
         const atividadeIndex = atividades.value.findIndex(atividade => atividade.id === currentAtividade.value.id);
         if (atividadeIndex !== -1) {
             atividades.value[atividadeIndex].concluida = true;
         }
 
+        console.log(`Link enviado: ${link.value}`);
         closeAtividadeModal();
     } catch (error) {
         console.error('Erro ao enviar link:', error);
     }
 };
 
-const createAtividade = async () => {
-    console.log('createAtividade called');
-    try {
-        await axios.post('/atividades', novaAtividade.value);
-        novaAtividade.value = { titulo: '', descricao: '', dataEntrega: '' };
-        showCreateModal.value = false;
-        fetchAtividades();
-    } catch (error) {
-        if (error.response && error.response.status === 422) {
-            alert('Data de entrega inválida. Por favor, escolha uma data que seja hoje ou no futuro.');
-        } else {
-            console.error('Erro ao criar atividade:', error);
-        }
-    }
-};
-
-const closeCreateModal = () => {
-    showCreateModal.value = false;
-    novaAtividade.value = { titulo: '', descricao: '', dataEntrega: '' };
-};
-
+// Função para formatar a data
 const formatDate = (date) => {
     const [year, month, day] = date.split('-');
     return `${day}/${month}/${year}`;
 };
 
+// Fetch atividades quando o componente é montado
 onMounted(fetchAtividades);
 </script>
 
@@ -240,21 +188,6 @@ body {
     color: #3c4043;
 }
 
-/* Botão para criar nova atividade */
-.btn-criar-atividade {
-    background-color: green;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-bottom: 20px;
-}
-
-.btn-criar-atividade:hover {
-    background-color: darkgreen;
-}
-
 /* Estilos da lista de atividades */
 .atividades-list ul {
     list-style-type: none;
@@ -300,53 +233,18 @@ body {
 }
 
 .modal-content {
-    width: 400px; /* Define a largura do modal */
+    background-color: #fff;
     padding: 20px;
-    border-radius: 8px;
-    background-color: #f4f4f4;
+    border-radius: 5px;
     position: relative;
-}
-
-.form-container {
-    display: flex;
-    flex-direction: column; /* Organiza os elementos na vertical */
-}
-
-.form-group {
-    margin-bottom: 15px; /* Espaçamento entre os grupos de formulário */
-}
-
-.form-group label {
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-.form-group input,
-.form-group textarea {
-    width: 100%;
-    padding: 8px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-}
-
-.submit-btn {
-    padding: 10px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.submit-btn:hover {
-    background-color: #218838;
 }
 
 .close {
     position: absolute;
     top: 10px;
     right: 10px;
-    font-size: 20px;
+    font-size: 24px;
     cursor: pointer;
 }
 </style>
+

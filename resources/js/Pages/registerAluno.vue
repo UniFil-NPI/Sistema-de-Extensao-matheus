@@ -29,7 +29,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
-
+import { Inertia } from '@inertiajs/inertia';
 
 const form = useForm({
     nome: '',
@@ -38,8 +38,7 @@ const form = useForm({
     tipoExtensao: '',
 });
 
-
-    const message = ref('');
+const message = ref('');
 
 const submit = async () => {
     try {
@@ -48,6 +47,7 @@ const submit = async () => {
                 if (!form.hasErrors()) {
                     message.value = 'Aluno registrado com sucesso!';
                     form.reset();
+                    Inertia.visit('/alunoHome'); // Redireciona para a tela inicial do aluno!!!!!!
                 }
             },
         });
@@ -59,7 +59,6 @@ const submit = async () => {
         console.error('Erro ao enviar o formulário:', error);
     }
 };
-
 </script>
 
 <style>
@@ -79,10 +78,10 @@ body {
 
 .form-container {
     background-color: #f4a100;
-    padding: 40px; /* Aumentado para maior espaçamento */
+    padding: 40px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 400px; /* Aumentado para maior largura */
+    width: 400px;
 }
 
 .logo {
@@ -111,10 +110,8 @@ input, select {
     padding: 10px;
     border: none;
     border-radius: 4px;
-    width: calc(100% - 20px); /* Ajuste para considerar o padding */
+    width: calc(100% - 20px);
 }
-
-
 
 button {
     background-color: #333;

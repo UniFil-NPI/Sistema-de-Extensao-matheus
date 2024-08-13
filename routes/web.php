@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\RegisterAlunoController;
 use App\Http\Controllers\AlunoController;
+use App\Http\Controllers\AtividadeController; // Adicionado
 
 // Rota principal
 Route::get('/', function () {
@@ -36,26 +37,27 @@ Route::get('/registerAluno', function () {
 })->name('registerAluno');
 Route::post('/register/aluno', [RegisterAlunoController::class, 'store'])->name('RegisterAluno.store');
 
+// Rota para a tela inicial do aluno 
+Route::get('/alunoHome', function () {
+    return Inertia::render('AlunoHome');
+})->name('alunoHome');
+
 // Rota para buscar alunos
 Route::get('/alunos', [AlunoController::class, 'index'])->name('alunos.index');
+Route::get('/alunos/{id}', [AlunoController::class, 'show']);
+Route::put('/alunos/{id}', [AlunoController::class, 'update']);
+
+// Rotas de atividade
+Route::get('/atividades', [AtividadeController::class, 'index']);
+Route::post('/atividades', [AtividadeController::class, 'store']);
+Route::post('/atividades/{id}/submeter-link', [AtividadeController::class, 'submeterLink']);
 
 // Rota do dashboard
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// Rotas de perfil
-Route::middleware('auth')->group(function () {
-Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-
-
-});
-
-Route::get('/alunos', [AlunoController::class, 'index']);
-Route::get('/alunos/{id}', [AlunoController::class, 'show']);
-Route::put('/alunos/{id}', [AlunoController::class, 'update']);
-
-require __DIR__.'/auth.php';
+// Perfil
+Route::get('/profile', [ProfileController::class, 'edit'])->middleware('auth')->name('profile.edit');
+Route::patch('/profile', [ProfileController::class, 'update'])->middleware('auth')->name('profile.update');
+Route::delete('/profile', [ProfileController::class, 'destroy'])->middleware('auth')->name('profile.destroy');
