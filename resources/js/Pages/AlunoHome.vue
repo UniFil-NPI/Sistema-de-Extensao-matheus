@@ -2,7 +2,10 @@
     <div>
         <!-- Barra de navegação -->
         <div class="navbar">
-            <a href="#" class="navbar-brand">Sistema de Extensão Curricular</a>
+       <!-- Substituindo o texto pelo logo -->
+       <div class="logo-container">
+                <img src="/images/logo.png" alt="Logo do Sistema de Extensão Curricular" class="logo-image" />
+            </div>
         </div>
 
         <!-- Conteúdo principal -->
@@ -11,10 +14,9 @@
             <div class="sidebar">
                 <ul>
                     <li><a href="#">Início</a></li>
-                    <li><a href="#">Turmas</a></li>
                     <li><a href="#" @click="showAtividades = true">Atividades</a></li>
-                    <li><a href="#">Perguntas</a></li>
-                    <li><a href="#">Notas</a></li>
+                    <li><a href="#" @click="redirectToProjeto">Projeto</a></li>
+                    <li><a href="#" @click="redirectToCriarProjeto">Criar Projeto</a></li>
                 </ul>
             </div>
 
@@ -37,20 +39,33 @@
                 </div>
             </div>
 
-            <!-- Modal de Atividade -->
-            <div v-if="isAtividadeModalOpen" class="modal">
-                <div class="modal-content">
-                    <span class="close" @click="closeAtividadeModal">&times;</span>
-                    <h2>{{ currentAtividade.titulo }}</h2>
-                    <p>{{ currentAtividade.descricao }}</p>
-                    <p>Data de Entrega: {{ formatDate(currentAtividade.dataEntrega) }}</p>
-                    <form @submit.prevent="submitLink">
-                        <label for="link">Link:</label>
-                        <input type="url" id="link" v-model="link" required>
-                        <button type="submit">Enviar</button>
-                    </form>
-                </div>
+           <!-- Modal de Atividade -->
+<div v-if="isAtividadeModalOpen" class="modal">
+    <div class="modal-content">
+        <span class="close" @click="closeAtividadeModal">&times;</span>
+        <h2>{{ currentAtividade.titulo }}</h2>
+        <div class="form-container">
+            <div class="form-group">
+                <label for="descricao">Descrição:</label>
+                <textarea id="descricao" v-model="currentAtividade.descricao" readonly></textarea>
             </div>
+
+            <div class="form-group">
+                <label for="dataEntrega">Data de Entrega:</label>
+                <input type="text" id="dataEntrega" :value="formatDate(currentAtividade.dataEntrega)" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="link">Link para Submissão:</label>
+                <input type="url" id="link" v-model="link" required>
+            </div>
+
+            <button type="submit" class="submit-btn" @click="submitLink">Enviar</button>
+        </div>
+    </div>
+</div>
+
+
         </div>
     </div>
 </template>
@@ -58,6 +73,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import { Inertia } from '@inertiajs/inertia';
 
 const showAtividades = ref(false);
 const atividades = ref([]);
@@ -65,12 +81,17 @@ const isAtividadeModalOpen = ref(false);
 const currentAtividade = ref({});
 const link = ref('');
 
+function redirectToProjeto() {
+  Inertia.visit('/projeto'); // Rota para a página de projeto
+}
+
+
 // Função para buscar as atividades do backend
 const fetchAtividades = async () => {
     try {
         const response = await axios.get('/atividades');
         atividades.value = response.data;
-        console.log('Atividades:', atividades.value); // Verifique os dados retornados
+        console.log('Atividades:', atividades.value);
     } catch (error) {
         console.error('Erro ao buscar atividades:', error);
     }
@@ -92,10 +113,8 @@ const closeAtividadeModal = () => {
 // Função para submeter o link e marcar a atividade como concluída
 const submitLink = async () => {
     try {
-        // Envia o link para o backend (substitua '/atividade/{id}/submeter-link' com a rota correta)
         await axios.post(`/atividades/${currentAtividade.value.id}/submeter-link`, { link: link.value });
 
-        // Marca a atividade como concluída
         const atividadeIndex = atividades.value.findIndex(atividade => atividade.id === currentAtividade.value.id);
         if (atividadeIndex !== -1) {
             atividades.value[atividadeIndex].concluida = true;
@@ -108,18 +127,33 @@ const submitLink = async () => {
     }
 };
 
+// Função para redirecionar para a página do projeto do aluno
+const goToProjetos = () => {
+    window.location.href = '/projetos';
+};
+
 // Função para formatar a data
 const formatDate = (date) => {
     const [year, month, day] = date.split('-');
     return `${day}/${month}/${year}`;
 };
 
+const navigateToProjeto = () => {
+    // Substitua '1' pelo ID real do projeto ou a lógica para obter o ID do projeto do aluno
+    window.location.href = `/aluno/projeto/1`;
+};
+
+
+function redirectToCriarProjeto() {
+  Inertia.visit('/aluno/criar-projeto');
+}
+
 // Fetch atividades quando o componente é montado
 onMounted(fetchAtividades);
 </script>
 
 <style>
-/* Reset de estilos */
+/* Reset de estil   os */
 * {
     margin: 0;
     padding: 0;
@@ -136,13 +170,13 @@ body {
 
 /* Barra de navegação */
 .navbar {
-    background-color: orange;
+    background-color: #F29400;
     color: #fff;
     height: 100px;
     margin-bottom: 20px;
     padding: 10px;
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
 }
 
 .navbar-brand {
@@ -220,6 +254,7 @@ body {
 }
 
 /* Estilos do modal */
+/* Estilos do modal */
 .modal {
     display: flex;
     justify-content: center;
@@ -233,18 +268,62 @@ body {
 }
 
 .modal-content {
-    background-color: #fff;
+    width: 400px;
     padding: 20px;
-    border-radius: 5px;
+    border-radius: 8px;
+    background-color: #f4f4f4;
     position: relative;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.submit-btn {
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.submit-btn:hover {
+    background-color: #218838;
 }
 
 .close {
     position: absolute;
     top: 10px;
     right: 10px;
-    font-size: 24px;
+    font-size: 20px;
     cursor: pointer;
 }
+.logo-container {
+    display: flex;
+    align-items: center;
+    width:300px;
+}
+.logo-image {
+    max-width: 200px;
+    height: auto;
+}
 </style>
-

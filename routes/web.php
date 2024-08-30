@@ -8,7 +8,17 @@ use Inertia\Inertia;
 use App\Http\Controllers\RegisterAlunoController;
 use App\Http\Controllers\AlunoController;
 use App\Http\Controllers\AtividadeController; // Adicionado
+use App\Http\Controllers\ProjetoController;
+use App\Http\Controllers\ProfessorController;
 
+Route::get('/gerenciarProjetos', function () {
+    return Inertia::render('Professor/GerenciarProjetos');
+})->name('gerenciarProjetos');
+
+
+Route::get('/projeto', function () {
+    return Inertia::render('Aluno/Projeto'); // Renderiza a página do projeto
+});
 // Rota principal
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -61,3 +71,22 @@ Route::get('/dashboard', function () {
 Route::get('/profile', [ProfileController::class, 'edit'])->middleware('auth')->name('profile.edit');
 Route::patch('/profile', [ProfileController::class, 'update'])->middleware('auth')->name('profile.update');
 Route::delete('/profile', [ProfileController::class, 'destroy'])->middleware('auth')->name('profile.destroy');
+
+
+
+
+
+Route::middleware(['web'])->group(function () {
+    // Rota para exibir a lista de projetos com funcionalidade de busca
+    Route::get('/professor/projetos', [ProfessorController::class, 'index'])->name('professor.projetos');
+
+    // Rota para exibir um projeto específico para avaliação
+    Route::get('/professor/projetos/{id}', [ProfessorController::class, 'show'])->name('professor.projetos.show');
+});
+
+
+Route::get('/aluno/criar-projeto', function () {
+    return Inertia::render('Aluno/CriarProjeto');
+});
+
+Route::post('/aluno/projetos', [ProjetoController::class, 'store'])->name('projetos.store');

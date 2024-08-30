@@ -9,16 +9,16 @@
                 <label for="email">E-mail: <span class="required">*</span></label>
                 <input type="email" id="email" v-model="form.email" required>
 
-                <label for="matricula">Matrícula: <span class="required">*</span></label>
-                <div class="matricula-container">
-                    <input type="text" id="matricula" v-model="form.matricula" placeholder="Matricula" required>
-                </div>
-
-                <label for="tipo-extensao">Tipo de Extensão: <span class="required">*</span></label>
-                <select id="tipo-extensao" v-model="form.tipoExtensao" required>
-                    <option value="aplicativo">Aplicativo</option>
-                    <option value="pensamento-computacional">Pensamento Computacional</option>
+                <label for="fase-extensao">Fase da Extensão: <span class="required">*</span></label>
+                <select id="fase-extensao" v-model="form.faseExtensao" required>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
                 </select>
+
+                <label for="nome-projeto">Nome do Projeto: <span class="required">*</span></label>
+                <input type="text" id="nome-projeto" v-model="form.nomeProjeto" required>
 
                 <button type="submit">Enviar</button>
             </form>
@@ -35,7 +35,7 @@ const form = useForm({
     nome: '',
     email: '',
     matricula: '',
-    tipoExtensao: '',
+    nomeProjeto: '', // Alterado aqui
 });
 
 const message = ref('');
@@ -47,7 +47,7 @@ const submit = async () => {
                 if (!form.hasErrors()) {
                     message.value = 'Aluno registrado com sucesso!';
                     form.reset();
-                    Inertia.visit('/alunoHome'); // Redireciona para a tela inicial do aluno!!!!!!
+                    Inertia.visit('/alunoHome'); // Redireciona para a tela inicial do aluno
                 }
             },
         });

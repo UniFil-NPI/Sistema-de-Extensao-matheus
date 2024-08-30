@@ -45,7 +45,7 @@ export default {
     height: 100vh;
 }
 .orange-bg {
-    background-color: orange;
+    background-color: #F29400;
     padding: 50px;
     text-align: center;
     border-radius: 8px;

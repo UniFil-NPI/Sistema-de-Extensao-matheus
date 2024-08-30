@@ -13,15 +13,15 @@ class RegisterAlunoController extends Controller
         $request->validate([
             'nome' => 'required|string|max:255',
             'email' => 'required|email|unique:alunos,email',
-            'matricula' => 'required|string|max:15',
-            'tipoExtensao' => 'required|string|max:255',
+            'faseExtensao' => 'required|string|max:15',
+            'nomeProjeto' => 'required|string|max:255',
         ]);
 
         Aluno::create([
             'nome' => $request->nome,
             'email' => $request->email,
-            'matricula' => $request->matricula,
-            'tipoExtensao' => $request->tipoExtensao,
+            'faseExtensao' => $request->faseExtensao,
+            'nomeProjeto' => $request->nomeProjeto,
         ]);
 
         return redirect()->route('alunoHome');

@@ -5,11 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Aluno extends Model
+class Projeto extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'nome', 'email', 'faseExtensao', 'nomeProjeto',
-    ];
+    // Defina os campos que podem ser preenchidos
+    protected $fillable = ['nome', 'descricao'];
 }
