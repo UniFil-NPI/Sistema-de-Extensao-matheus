@@ -34,7 +34,7 @@ import { Inertia } from '@inertiajs/inertia';
 const form = useForm({
     nome: '',
     email: '',
-    matricula: '',
+    faseExtensao: '',
     nomeProjeto: '', // Alterado aqui
 });
 

@@ -29,22 +29,31 @@ class ProjetoController extends Controller
     public function store(Request $request)
 {
     // Validação dos dados
-    $request->validate([
+    $validatedData = $request->validate([
         'titulo' => 'required|string|max:255',
         'descricao' => 'required|string',
-        'data_inicio' => 'required|date',
-        'data_conclusao' => 'required|date|after_or_equal:data_inicio',
+        'dataInicio' => 'required|date',
+        'dataFim' => 'required|date|after_or_equal:dataInicio',
     ]);
+    // Mapeia dataFim para dataFim antes de salvar no banco
+    //$validatedData['dataFim'] = $validatedData['dataFim'];
+    //unset($validatedData['dataFim']);
 
+    
+    // Temporariamente definindo um aluno_id padrão
+    $aluno_id = '1'; // Ajuste este valor conforme necessário
+
+    //\DB::table('projetos')->insert(array_merge($validatedData, ['aluno_id' => $aluno_id]));    
     // Criação do novo projeto
     $projeto = Projeto::create([
         'titulo' => $request->titulo,
         'descricao' => $request->descricao,
-        'data_inicio' => $request->data_inicio,
-        'data_conclusao' => $request->data_conclusao,
+        'dataInicio' => $request->dataInicio,
+        'dataFim' => $request->dataFim,
+        'aluno_id' => $aluno_id, // Valor temporário até que o login esteja implementado
     ]);
-
+    
     // Redireciona o aluno para a página inicial do aluno com uma mensagem de sucesso
-    return redirect()->route('aluno.home')->with('success', 'Projeto criado com sucesso!');
+    return redirect()->route('alunoHome')->with('success', 'Projeto criado com sucesso!');
 }
 }

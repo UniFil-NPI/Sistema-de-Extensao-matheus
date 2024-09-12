@@ -13,6 +13,7 @@ class CreateAtividadesTable extends Migration
             $table->string('titulo');
             $table->text('descricao');
             $table->date('dataEntrega');
+            $table->string('link')->nullable();
             $table->boolean('concluida')->default(false);
             $table->timestamps();
         });

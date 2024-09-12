@@ -17,9 +17,8 @@ class CreateAlunosTable extends Migration
             $table->id();
             $table->string('nome');
             $table->string('email')->unique();
-            $table->string('ddd');
-            $table->string('telefone');
-            $table->string('tipoExtensao');
+            $table->integer('faseExtensao');
+            $table->string('nomeProjeto');
             $table->timestamps();
         });
     }

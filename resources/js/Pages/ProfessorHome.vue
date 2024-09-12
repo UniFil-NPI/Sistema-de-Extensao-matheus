@@ -22,7 +22,7 @@
 
             <!-- Conteúdo principal -->
             <div class="main-content">
-                <h1>Bem-vindo ao Sistema de Extensão Curricular</h1>
+                <h1>Bem-vindo ao UniExtension</h1>
                 <br>
 
                 <!-- Botão para criar nova atividade -->

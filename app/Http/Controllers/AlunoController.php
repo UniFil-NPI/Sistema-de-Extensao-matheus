@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Aluno;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 
 class AlunoController extends Controller
 {
@@ -23,6 +25,20 @@ class AlunoController extends Controller
         $aluno = Aluno::findOrFail($id);
         $aluno->update($request->all());
         return response()->json($aluno);
+    }
+    public function login(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
+
+        if (Auth::attempt($credentials)) {
+            // Autenticação bem-sucedida
+            return redirect()->route('alunoHome');
+        } else {
+            // Autenticação falhou
+            return back()->withErrors([
+                'email' => 'Credenciais inválidas.',
+            ])->onlyInput('email');
+        }
     }
 }
 

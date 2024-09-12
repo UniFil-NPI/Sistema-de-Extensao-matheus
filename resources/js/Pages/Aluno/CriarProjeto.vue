@@ -1,15 +1,15 @@
 <template>
   <!-- Barra de navegação -->
   <div class="navbar">
-       <!-- Substituindo o texto pelo logo -->
-       <div class="logo-container">
-                <img src="/images/logo.png" alt="Logo do Sistema de Extensão Curricular" class="logo-image" />
-            </div>
-        </div>
+    <div class="logo-container">
+      <img src="/images/logo.png" alt="Logo do Sistema de Extensão Curricular" class="logo-image" />
+    </div>
+  </div>
+
   <div class="container">
     <div class="card shadow p-4">
-      <h1 class="text-center mb-4"><big>Criar Novo Projeto</big></h1>
-      
+      <h1 class="text-center mb-4">Criar Novo Projeto</h1>
+
       <!-- Exibe a mensagem de sucesso, se houver -->
       <div v-if="successMessage" class="alert alert-success text-center">
         {{ successMessage }}
@@ -35,12 +35,15 @@
         </div>
 
         <div class="form-group">
-          <label for="dataConclusao">Data de Conclusão</label>
+          <label for="dataFim">Data de Conclusão</label>
           <br>
-          <input v-model="form.dataConclusao" id="dataConclusao" type="date" class="form-control" required>
+          <input v-model="form.dataFim" id="dataFim" type="date" class="form-control" required>
         </div>
 
-        <button type="submit" class="btn btn-primary w-100 mt-3">Criar Projeto</button>
+        <!-- Botão de submissão, desabilitado enquanto o formulário é submetido -->
+        <button :disabled="isSubmitting" type="submit" class="btn btn-primary w-100 mt-3">
+          Criar Projeto
+        </button>
       </form>
 
       <!-- Botão para voltar para a página inicial do aluno -->
@@ -54,22 +57,28 @@ import { ref } from 'vue';
 import { Inertia } from '@inertiajs/inertia';
 import { usePage } from '@inertiajs/inertia-vue3';
 
+// Estado do formulário
 const form = ref({
   titulo: '',
   descricao: '',
   dataInicio: '',
-  dataConclusao: '',
+  dataFim: '',
 });
+
+const successMessage = ref(''); // Variável para armazenar a mensagem de sucesso
+const isSubmitting = ref(false); // Estado para controlar a submissão do formulário
 
 // Submissão do formulário
 function submitForm() {
+  // Desabilita o botão de envio
+  isSubmitting.value = true;
+
   Inertia.post(route('projetos.store'), form.value, {
     onSuccess: () => {
-      // Exibe a mensagem de sucesso, se houver
       const { flash } = usePage().props.value;
 
       if (flash && flash.success) {
-        alert(flash.success); // Exibe a mensagem de sucesso
+        successMessage.value = flash.success; // Define a mensagem de sucesso
       }
 
       // Limpa o formulário após a criação bem-sucedida
@@ -77,8 +86,17 @@ function submitForm() {
         titulo: '',
         descricao: '',
         dataInicio: '',
-        dataConclusao: '',
+        dataFim: '',
       };
+
+      // Reativa o botão de envio após a submissão bem-sucedida
+      isSubmitting.value = false;
+    },
+    onError: (errors) => {
+      console.error(errors); // Exibe os erros no console
+
+      // Reativa o botão caso haja erros
+      isSubmitting.value = false;
     }
   });
 }
@@ -113,47 +131,36 @@ function goBack() {
 .form-control {
   padding: 10px;
   font-size: 16px;
-  width:400px;
+  width: 100%; /* Ajustado para ocupar toda a largura */
 }
 
 .btn-primary {
   background-color: #28a745;
-    color: #fff;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-bottom: 20px;
-    vertical-align: middle;
-
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-bottom: 20px;
 }
-
-
 .btn-primary:hover {
-    background-color: #218838;
+  background-color: #218838;
 }
 
-
-.btn-secondary{
+.btn-secondary {
   background-color: #0d0ab4;
-    color: #fff;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-bottom: 20px;
-    vertical-align: middle;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
 }
-
 
 .btn-secondary:hover {
-    background-color: #0d0ab4;
+  background-color: #0d0ab4;
 }
-
-
-
 
 .alert {
   margin-bottom: 15px;
@@ -175,21 +182,23 @@ function goBack() {
 }
 
 .navbar {
-    background-color: #F29400;
-    color: #fff;
-    height: 100px;
-    margin-bottom: 20px;
-    padding: 10px;
-    display: flex;
-    justify-content: center;
+  background-color: #F29400;
+  color: #fff;
+  height: 100px;
+  margin-bottom: 20px;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
 }
+
 .logo-container {
-    display: flex;
-    align-items: center;
-    width:300px;
+  display: flex;
+  align-items: center;
+  width: 300px;
 }
+
 .logo-image {
-    max-width: 200px;
-    height: auto;
+  max-width: 200px;
+  height: auto;
 }
 </style>

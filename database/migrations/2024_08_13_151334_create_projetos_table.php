@@ -15,11 +15,12 @@ class CreateProjetosTable extends Migration
     {
         Schema::create('projetos', function (Blueprint $table) {
             $table->id();
-            $table->string('titulo');
+            $table->string('titulo')->default('Sem título');
             $table->text('descricao')->nullable();
             $table->date('dataInicio');
             $table->date('dataFim')->nullable();
-            $table->foreignId('aluno_id')->constrained('alunos')->onDelete('cascade');
+            //$table->foreignId('aluno_id')->constrained('alunos')->onDelete('cascade');
+            $table->string('aluno_id')->default('1');//quando for autenticar colocar email(é a primary key)e rodar a migration denovo
             $table->timestamps();
         });
     }
