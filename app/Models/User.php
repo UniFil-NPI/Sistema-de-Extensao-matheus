@@ -11,6 +11,11 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    
+    public function isAdmin()
+    {
+        return $this->is_admin===1; // Retorna verdadeiro se o usuário for admin
+    }
     /**
      * The attributes that are mass assignable.
      *
@@ -37,11 +42,9 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
+    
 }

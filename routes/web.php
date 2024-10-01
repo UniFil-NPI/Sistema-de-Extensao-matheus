@@ -11,6 +11,8 @@ use App\Http\Controllers\AtividadeController;
 use App\Http\Controllers\ProjetoController;
 use App\Http\Controllers\ProfessorController;
 
+
+
 // Rota principal
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -27,6 +29,9 @@ Route::get('/loginProfessor', function () {
 })->name('loginProfessor');
 
 Route::post('/loginProfessor', [LoginController::class, 'loginProfessor'])->name('loginProfessor.post');
+
+//Rota aluno Entry
+Route::get('/alunoEntry', [AlunoController::class, 'showAlunoEntry'])->name('aluno.entry');
 
 // Login para alunos
 Route::get('/loginAluno', function () {
@@ -62,7 +67,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Rotas protegidas para professores (admin)
-Route::middleware(['auth', 'admin'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     // Nova rota para a página ProfessorHome
     Route::get('/professorHome', function () {
         return Inertia::render('ProfessorHome');
@@ -86,7 +91,7 @@ Route::get('/forgotPasswordAluno', function () {
 })->name('forgotPasswordAluno');
 
 // Rota para gerenciamento de projetos (apenas admin)
-Route::middleware(['auth', 'admin'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/gerenciarProjetos', function () {
         return Inertia::render('Professor/GerenciarProjetos');
     })->name('gerenciarProjetos');

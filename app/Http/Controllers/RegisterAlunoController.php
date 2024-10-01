@@ -13,6 +13,7 @@ class RegisterAlunoController extends Controller
         $request->validate([
             'nome' => 'required|string|max:255',
             'email' => 'required|email|unique:alunos,email',
+            'password' => 'required|string|min:8|confirmed', 
             'faseExtensao' => 'required|string|max:15',
             'nomeProjeto' => 'required|string|max:255',
         ]);
@@ -20,6 +21,7 @@ class RegisterAlunoController extends Controller
         Aluno::create([
             'nome' => $request->nome,
             'email' => $request->email,
+            'password' => Hash::make($request->password),
             'faseExtensao' => $request->faseExtensao,
             'nomeProjeto' => $request->nomeProjeto,
         ]);
