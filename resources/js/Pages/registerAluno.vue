@@ -9,6 +9,10 @@
                 <label for="email">E-mail: <span class="required">*</span></label>
                 <input type="email" id="email" v-model="form.email" required>
 
+                <label for="password">Senha: <span class="required">*</span></label>
+                <input type="password" id="password" v-model="form.password" required>
+
+
                 <label for="fase-extensao">Fase da Extensão: <span class="required">*</span></label>
                 <select id="fase-extensao" v-model="form.faseExtensao" required>
                     <option value="1">1</option>
@@ -35,31 +39,35 @@ import { Inertia } from '@inertiajs/inertia';
 const form = useForm({
     nome: '',
     email: '',
+    password: '',
+    password_confirmation: '',
     faseExtensao: '',
-    nomeProjeto: '', // Alterado aqui
+    nomeProjeto: '',// Alterado aqui
+    
 });
 
 const message = ref('');
 
 const submit = async () => {
     try {
-        const response = await form.post(route('RegisterAluno.store'), {
-            onFinish: () => {
-                if (!form.hasErrors()) {
-                    message.value = 'Aluno registrado com sucesso!';
-                    form.reset();
-                    Inertia.visit('/alunoHome'); // Redireciona para a tela inicial do aluno
-                }
+        await form.post(route('registerAluno'), {
+            onFinish: () => {},
+            onSuccess: () => {
+                message.value = 'Aluno registrado com sucesso!';
+                form.reset();
+                // Redireciona para a página do aluno
+                Inertia.visit('/alunoHome');
             },
+            onError: () => {
+                message.value = 'Erro ao registrar aluno. Verifique os dados e tente novamente.';
+            }
         });
-
-        if (response.data.message) {
-            message.value = response.data.message;
-        }
     } catch (error) {
         console.error('Erro ao enviar o formulário:', error);
+        message.value = 'Ocorreu um erro inesperado ao enviar o formulário.';
     }
 };
+
 </script>
 
 <style>

@@ -4,14 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Projeto;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class ProjetoController extends Controller
 {
     // Método para exibir o projeto do aluno
     public function show($id)
     {
+        $aluno_id = 1;
+        //$aluno_id = Auth::id();
         // Busca o projeto pelo ID ou retorna erro 404 se não encontrado
-        $projeto = Projeto::findOrFail($id);
+        //$projeto = Projeto::findOrFail($id);
+        $projeto = Projeto::where('id', $id)->where('aluno_id', $aluno_id)->firstOrFail();
 
         // Retorna a view 'Projeto' com os dados do projeto
         return Inertia::render('Aluno/Projeto', [
@@ -33,7 +37,7 @@ class ProjetoController extends Controller
         'titulo' => 'required|string|max:255',
         'descricao' => 'required|string',
         'dataInicio' => 'required|date',
-        'dataFim' => 'required|date|after_or_equal:dataInicio',
+        'dataFim' => 'required|date|after_or_equal:dataInicio   ',
     ]);
     // Mapeia dataFim para dataFim antes de salvar no banco
     //$validatedData['dataFim'] = $validatedData['dataFim'];
@@ -54,6 +58,6 @@ class ProjetoController extends Controller
     ]);
     
     // Redireciona o aluno para a página inicial do aluno com uma mensagem de sucesso
-    return redirect()->route('alunoHome')->with('success', 'Projeto criado com sucesso!');
+    return redirect()->route('projeto.show', $projeto->id)->with('success', 'Projeto criado com sucesso!');
 }
 }

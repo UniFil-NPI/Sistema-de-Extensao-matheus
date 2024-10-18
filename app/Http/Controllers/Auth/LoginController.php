@@ -18,6 +18,7 @@ class LoginController extends Controller
 
         // Tentativa de login com as credenciais fornecidas
         if (Auth::attempt(array_merge($credentials, ['is_admin' => 1]))) {
+            $request->session()->regenerate();
             // Redirecionar para a home do professor após login bem-sucedido
             return redirect()->route('professorHome');
         }

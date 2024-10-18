@@ -15,7 +15,7 @@
                 <ul>
                     <li><a href="#">Início</a></li>
                     <li><a href="#" @click="showAtividades = true">Atividades</a></li>
-                    <li><a href="#" @click="redirectToProjeto">Projeto</a></li>
+                    <li><a href="#" @click="abrirProjeto">Projeto</a></li>
                     <li><a href="#" @click="redirectToCriarProjeto">Criar Projeto</a></li>
                 </ul>
             </div>
@@ -81,9 +81,11 @@ const isAtividadeModalOpen = ref(false);
 const currentAtividade = ref({});
 const link = ref('');
 
-function redirectToProjeto() {
-  Inertia.visit('/projeto'); // Rota para a página de projeto
-}
+// Função para redirecionar para a página do projeto do aluno
+const abrirProjeto = () => {
+    // Substitua '1' pelo ID real do projeto ou a lógica para obter o ID do projeto do aluno
+    window.location.href = `/aluno/projeto/1`;
+};
 
 
 // Função para buscar as atividades do backend
@@ -136,11 +138,6 @@ const goToProjetos = () => {
 const formatDate = (date) => {
     const [year, month, day] = date.split('-');
     return `${day}/${month}/${year}`;
-};
-
-const navigateToProjeto = () => {
-    // Substitua '1' pelo ID real do projeto ou a lógica para obter o ID do projeto do aluno
-    window.location.href = `/aluno/projeto/1`;
 };
 
 

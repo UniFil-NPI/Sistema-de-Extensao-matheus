@@ -36,20 +36,33 @@
       <h2>Cronograma</h2>
       <p>{{ projeto.cronograma }}</p>
     </section>
+
+    <!-- Formulário para adicionar novas informações -->
+    <section class="portfolio-section">
+      <h2>Adicionar Informações</h2>
+      <form @submit.prevent="adicionarInformacao">
+        <input v-model="novaInformacao" placeholder="Digite nova informação" />
+        <button type="submit">Adicionar</button>
+      </form>
+    </section>
   </div>
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+import { ref } from 'vue';
 
-// Dados fictícios para demonstração, substitua conforme necessário
-const projeto = reactive({
-  titulo: 'Nome do Projeto',
-  descricao: 'Uma breve descrição do projeto.',
-  objetivos: ['Objetivo 1', 'Objetivo 2', 'Objetivo 3'],
-  tecnologias: ['Vue.js', 'Laravel', 'MySQL'],
-  cronograma: 'Data de início: 01/08/2024 - Data de conclusão: 30/11/2024'
-})
+const props = defineProps(['projeto']); // Recebe os dados do projeto do controlador
+
+// Reactive variable to hold new information
+const novaInformacao = ref('');
+
+const adicionarInformacao = () => {
+  // Implementar a lógica para adicionar informações
+  console.log('Nova Informação:', novaInformacao.value);
+  // Aqui você pode fazer uma requisição para o backend se necessário
+  // Limpar o campo de entrada
+  novaInformacao.value = '';
+}
 </script>
 
 <style scoped>

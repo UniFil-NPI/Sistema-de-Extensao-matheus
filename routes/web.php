@@ -5,13 +5,11 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\RegisterAlunoController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\AlunoController;
 use App\Http\Controllers\AtividadeController;
 use App\Http\Controllers\ProjetoController;
 use App\Http\Controllers\ProfessorController;
-
-
 
 // Rota principal
 Route::get('/', function () {
@@ -23,6 +21,10 @@ Route::get('/', function () {
     ]);
 });
 
+// Rota de registro para alunos utilizando o RegisteredUserController
+Route::get('/registerAluno', [RegisteredUserController::class, 'create'])->name('registerAluno');
+Route::post('/registerAluno', [RegisteredUserController::class, 'store'])->name('registerAluno.post');
+
 // Rotas de autenticação
 Route::get('/loginProfessor', function () {
     return Inertia::render('LoginProfessor');
@@ -30,7 +32,7 @@ Route::get('/loginProfessor', function () {
 
 Route::post('/loginProfessor', [LoginController::class, 'loginProfessor'])->name('loginProfessor.post');
 
-//Rota aluno Entry
+// Rota aluno Entry
 Route::get('/alunoEntry', [AlunoController::class, 'showAlunoEntry'])->name('aluno.entry');
 
 // Login para alunos
@@ -40,50 +42,35 @@ Route::get('/loginAluno', function () {
 
 Route::post('/loginAluno', [AlunoController::class, 'login'])->name('loginAluno.post');
 
-// Rota de registro para alunos
-Route::get('/registerAluno', function () {
-    return Inertia::render('RegisterAluno');
-})->name('registerAluno');
-
-Route::post('/register/aluno', [RegisterAlunoController::class, 'store'])->name('RegisterAluno.store');
-
 // Rota para a tela inicial do aluno (protegida por middleware de autenticação)
-Route::middleware(['auth'])->group(function () {
-    Route::get('/alunoHome', function () {
-        return Inertia::render('AlunoHome');
-    })->name('alunoHome');
+Route::get('/alunoHome', function () {
+    return Inertia::render('AlunoHome');
+})->name('alunoHome');
 
-    // Rota para o aluno criar um projeto
-    Route::get('/aluno/criar-projeto', function () {
-        return Inertia::render('Aluno/CriarProjeto');
-    });
+// Rota para o aluno criar um projeto
+Route::get('/aluno/criar-projeto', [ProjetoController::class, 'create'])->name('projetos.create');
 
-    Route::post('/aluno/projetos', [ProjetoController::class, 'store'])->name('projetos.store');
-
-    // Rota do perfil de usuário autenticado
-    Route::get('/profile', [ProfileController::class, 'edit'])->middleware('auth')->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->middleware('auth')->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->middleware('auth')->name('profile.destroy');
-});
+// Rota para armazenar o projeto
+Route::post('/aluno/projetos', [ProjetoController::class, 'store'])->name('projetos.store');
 
 // Rotas protegidas para professores (admin)
-Route::middleware(['auth'])->group(function () {
-    // Nova rota para a página ProfessorHome
-    Route::get('/professorHome', function () {
-        return Inertia::render('ProfessorHome');
-    })->name('professorHome');
+Route::get('/professorHome', function () {
+    return Inertia::render('ProfessorHome');
+})->name('professorHome');
 
-    // Rota para exibir a lista de projetos com funcionalidade de busca
-    Route::get('/professor/projetos', [ProfessorController::class, 'index'])->name('professor.projetos');
+// Rota para exibir a lista de projetos com funcionalidade de busca
+Route::get('/professor/projetos', [ProfessorController::class, 'index'])->name('professor.projetos');
 
-    // Rota para exibir um projeto específico para avaliação
-    Route::get('/professor/projetos/{id}', [ProfessorController::class, 'show'])->name('professor.projetos.show');
+// Rota para exibir um projeto específico para avaliação
+Route::get('/professor/projetos/{id}', [ProfessorController::class, 'show'])->name('professor.projetos.show');
 
-    // Rotas de atividades para o professor gerenciar
-    Route::get('/atividades', [AtividadeController::class, 'index']);
-    Route::post('/atividades', [AtividadeController::class, 'store']);
-    Route::post('/atividades/{id}/submeter-link', [AtividadeController::class, 'submeterLink']);
-});
+// Rota para o aluno visualizar o próprio projeto
+Route::get('/aluno/projeto/{id}', [ProjetoController::class, 'show'])->name('aluno.projeto.show');
+
+// Rotas de atividades para o professor gerenciar
+Route::get('/atividades', [AtividadeController::class, 'index']);
+Route::post('/atividades', [AtividadeController::class, 'store']);
+Route::post('/atividades/{id}/submeter-link', [AtividadeController::class, 'submeterLink']);
 
 // Rota de recuperação de senha para alunos
 Route::get('/forgotPasswordAluno', function () {
@@ -91,13 +78,6 @@ Route::get('/forgotPasswordAluno', function () {
 })->name('forgotPasswordAluno');
 
 // Rota para gerenciamento de projetos (apenas admin)
-Route::middleware(['auth'])->group(function () {
-    Route::get('/gerenciarProjetos', function () {
-        return Inertia::render('Professor/GerenciarProjetos');
-    })->name('gerenciarProjetos');
-});
-
-// Rota de dashboard protegida
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/gerenciarProjetos', function () {
+    return Inertia::render('Professor/GerenciarProjetos');
+})->name('gerenciarProjetos');

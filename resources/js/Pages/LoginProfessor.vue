@@ -29,6 +29,9 @@
                 onSuccess: () => {
                     window.location.href = route('professorHome');
                 },
+                onError: () => {
+            alert('Falha ao efetuar login. Verifique suas credenciais.');
+        }
             });
         };
         </script>
