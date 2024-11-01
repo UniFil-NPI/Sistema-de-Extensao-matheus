@@ -26,7 +26,7 @@ class ProjetoController extends Controller
     // Método para criar um novo projeto (renderiza o formulário)
     public function create()
     {
-        return Inertia::render('Aluno/CriarProjeto');
+        return Inertia::render('/Aluno/CriarProjeto');
     }
 
     // Método para salvar o novo projeto
@@ -87,5 +87,22 @@ public function update(Request $request, $id)
     // Retorna uma resposta de sucesso em JSON
     return response()->json(['message' => 'Projeto atualizado com sucesso!'], 200);
 }
+
+public function index()
+    {
+        // Busca todos os projetos com os nomes dos alunos
+        $projetos = Projeto::with('aluno')->get(); // Assumindo que há um relacionamento 'aluno'
+
+        // Formatar a resposta para incluir o nome do aluno
+        $formattedProjects = $projetos->map(function ($projeto) {
+            return [
+                'id' => $projeto->id,
+                'titulo' => $projeto->titulo,
+                'nomeAluno' => $projeto->aluno->nome // Altere conforme o nome do campo
+            ];
+        });
+
+        return response()->json($formattedProjects);
+    }
 
 }

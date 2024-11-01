@@ -11,12 +11,13 @@
 <script setup>
 import { usePage } from '@inertiajs/inertia-vue3'
 import { Inertia } from '@inertiajs/inertia';
+
 const page = usePage()
 function redirectToLogin() {
-    Inertia.visit('/loginProfessor'); // Rota para a tela de login do professor
+     window.location.href = '/loginProfessor'; // Rota para a tela de login do professor
 }
 function redirectToAlunoEntry() {
-    Inertia.visit('/alunoEntry'); 
+     window.location.href = '/alunoEntry'; 
 }
 </script>
 

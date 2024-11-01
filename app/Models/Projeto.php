@@ -11,4 +11,7 @@ class Projeto extends Model
 
     // Defina os campos que podem ser preenchidos
     protected $fillable = ['titulo', 'descricao','dataInicio','dataFim','objetivos','tecnologias','cronograma','informacoes_avulsas'];
+
+    
 }
+

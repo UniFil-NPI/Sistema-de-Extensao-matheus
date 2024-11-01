@@ -10,21 +10,25 @@ class ProfessorController extends Controller
 {
     // Método para exibir a lista de projetos com funcionalidade de busca
     public function index(Request $request)
-    {
-        // Captura a query de busca se existir
-        $search = $request->input('search');
+{
+    // Captura a query de busca se existir
+    $search = $request->input('search');
 
-        // Busca os projetos no banco de dados, aplicando filtro de busca se necessário
-        $projetos = Projeto::when($search, function ($query, $search) {
-            return $query->where('titulo', 'like', "%{$search}%");
-        })->get();
+    // Busca os projetos no banco de dados, aplicando filtro de busca pelo título
+    $projetos = Projeto::when($search, function ($query, $search) {
+        return $query->where('titulo', 'like', "%{$search}%"); // Filtra apenas pelo título
+    })->get();
 
-        // Retorna a view 'GerenciarProjetos' com os dados dos projetos
-        return Inertia::render('Professor/GerenciarProjetos', [
-            'projetos' => $projetos,
-            'search' => $search,
-        ]);
-    }
+    
+    
+
+    // Retorna a view 'GerenciarProjetos' com os dados dos projetos
+    return Inertia::render('Professor/GerenciarProjetos', [
+        'projetos' => $projetos,
+        'search' => $search,
+    ]);
+}
+
 
     // Método para exibir um projeto específico para avaliação
     public function show($id)

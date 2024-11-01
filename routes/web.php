@@ -33,7 +33,7 @@ Route::get('/loginProfessor', function () {
 Route::post('/loginProfessor', [LoginController::class, 'loginProfessor'])->name('loginProfessor.post');
 
 // Rota aluno Entry
-Route::get('/alunoEntry', [AlunoController::class, 'showAlunoEntry'])->name('aluno.entry');
+Route::get('/alunoEntry', [AlunoController::class, 'showAlunoEntry']); //nao funfa??
 
 //rota de listar alunos
 Route::get('/alunos', [AlunoController::class, 'index'])->name('alunos.index');
@@ -70,8 +70,8 @@ Route::get('/professorHome', function () {
     return Inertia::render('ProfessorHome');
 })->name('professorHome');
 
-// Rota para exibir a lista de projetos com funcionalidade de busca
-Route::get('/professor/projetos', [ProfessorController::class, 'index'])->name('professor.projetos');
+// Nova rota para exibir a lista de projetos com funcionalidade de busca
+Route::get('/gerenciarProjetos', [ProfessorController::class, 'index'])->name('gerenciarProjetos');
 
 // Rota para exibir um projeto específico para avaliação
 Route::get('/professor/projetos/{id}', [ProfessorController::class, 'show'])->name('professor.projetos.show');
@@ -93,7 +93,4 @@ Route::get('/forgotPasswordAluno', function () {
     return Inertia::render('ForgotPasswordAluno'); 
 })->name('forgotPasswordAluno');
 
-// Rota para gerenciamento de projetos (apenas admin)
-Route::get('/gerenciarProjetos', function () {
-    return Inertia::render('Professor/GerenciarProjetos');
-})->name('gerenciarProjetos');
+

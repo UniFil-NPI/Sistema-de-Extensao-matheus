@@ -10,7 +10,7 @@
       <input
         v-model="searchQuery"
         type="text"
-        placeholder="Buscar projeto por título ou aluno..."
+        placeholder="Buscar projeto por título..."
       />
       <button @click="fetchProjects">Buscar</button>
     </div>
@@ -18,7 +18,7 @@
     <!-- Lista de projetos -->
     <div class="project-list">
       <div
-        v-for="projeto in filteredProjects"
+        v-for="projeto in projetos"
         :key="projeto.id"
         class="project-item"
       >
@@ -32,28 +32,24 @@
 
 <script setup>
 import { ref, computed } from 'vue';
+import { usePage } from '@inertiajs/vue3'; // Importar para acessar os dados retornados pela Inertia
 
+const { props } = usePage(); // Obter as propriedades passadas pela Inertia
 const searchQuery = ref('');
-const projetos = ref([
-  { id: 1, titulo: 'Projeto A', nomeAluno: 'Aluno 1' },
-  { id: 2, titulo: 'Projeto B', nomeAluno: 'Aluno 2' },
-  // Adicione mais projetos conforme necessário para exemplo
-]);
+const projetos = ref(props.projetos); // Atribuir os projetos passados pela Inertia
 
 const filteredProjects = computed(() => {
   if (!searchQuery.value) {
     return projetos.value;
   }
   return projetos.value.filter(projeto =>
-    projeto.titulo.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-    projeto.nomeAluno.toLowerCase().includes(searchQuery.value.toLowerCase())
+    projeto.titulo.toLowerCase().includes(searchQuery.value.toLowerCase())
   );
 });
 
 function avaliarProjeto(id) {
-  console.log('Redirecionando para a avaliação do projeto ${id}');
-  // Exemplo de redirecionamento com Inertia (substitua pela rota correta)
-  // Inertia.visit(/professor/avaliar-projeto/${id});
+  console.log(`Redirecionando para a avaliação do projeto ${id}`);
+  // Inertia.visit(`/professor/avaliar-projeto/${id}`);
 }
 </script>
 
