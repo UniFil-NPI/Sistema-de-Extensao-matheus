@@ -44,7 +44,7 @@ class AlunoController extends Controller
         return back()->withErrors([
             'email' => 'As credenciais fornecidas estão incorretas.',
         ]);
-    }
+    }   
 }
     public function showAlunoEntry()
     {

@@ -8,13 +8,12 @@ use Inertia\Inertia;
 
 class ProjetoController extends Controller
 {
+    
     // Método para exibir o projeto do aluno
     public function show($id)
     {
         $aluno_id = 1;
-        //$aluno_id = Auth::id();
-        // Busca o projeto pelo ID ou retorna erro 404 se não encontrado
-        //$projeto = Projeto::findOrFail($id);
+
         $projeto = Projeto::where('id', $id)->where('aluno_id', $aluno_id)->firstOrFail();
 
         // Retorna a view 'Projeto' com os dados do projeto
@@ -22,6 +21,7 @@ class ProjetoController extends Controller
             'projeto' => $projeto,
         ]);
     }
+    
 
     // Método para criar um novo projeto (renderiza o formulário)
     public function create()
@@ -38,6 +38,7 @@ class ProjetoController extends Controller
         'descricao' => 'required|string',
         'dataInicio' => 'required|date',
         'dataFim' => 'required|date|after_or_equal:dataInicio   ',
+
     ]);
     // Mapeia dataFim para dataFim antes de salvar no banco
     //$validatedData['dataFim'] = $validatedData['dataFim'];
@@ -60,4 +61,31 @@ class ProjetoController extends Controller
     // Redireciona o aluno para a página inicial do aluno com uma mensagem de sucesso
     return redirect()->route('projeto.show', $projeto->id)->with('success', 'Projeto criado com sucesso!');
 }
+
+public function update(Request $request, $id)   
+{
+    // Validação dos campos que podem ser enviados
+    $validatedData = $request->validate([
+        'objetivos' => 'array',
+        'tecnologias' => 'array',
+        'cronograma' => 'array',
+        'informacoes_avulsas' => 'array',
+    ]); 
+
+    // Encontra o projeto pelo ID
+    $projeto = Projeto::findOrFail($id);
+
+
+    // Atualiza os campos com os dados validados
+    $projeto->objetivos = $validatedData['objetivos'] ?? $projeto->objetivos;
+    $projeto->tecnologias = $validatedData['tecnologias'] ?? $projeto->tecnologias;
+    $projeto->cronograma = $validatedData['cronograma'] ?? $projeto->cronograma;
+    $projeto->informacoes_avulsas = $validatedData['informacoes_avulsas'] ?? $projeto->informacoes_avulsas;
+
+    $projeto->save();
+
+    // Retorna uma resposta de sucesso em JSON
+    return response()->json(['message' => 'Projeto atualizado com sucesso!'], 200);
+}
+
 }

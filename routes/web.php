@@ -28,12 +28,24 @@ Route::post('/registerAluno', [RegisteredUserController::class, 'store'])->name(
 // Rotas de autenticação
 Route::get('/loginProfessor', function () {
     return Inertia::render('LoginProfessor');
-})->name('loginProfessor');
+})->name('loginProfessor'); 
 
 Route::post('/loginProfessor', [LoginController::class, 'loginProfessor'])->name('loginProfessor.post');
 
 // Rota aluno Entry
 Route::get('/alunoEntry', [AlunoController::class, 'showAlunoEntry'])->name('aluno.entry');
+
+//rota de listar alunos
+Route::get('/alunos', [AlunoController::class, 'index'])->name('alunos.index');
+
+//rota update dados aluno
+Route::put('/alunos/{id}', [AlunoController::class, 'update']);
+
+
+Route::get('/projetoAluno', function () {
+    return view('projetoAluno');
+});
+
 
 // Login para alunos
 Route::get('/loginAluno', function () {
@@ -66,6 +78,10 @@ Route::get('/professor/projetos/{id}', [ProfessorController::class, 'show'])->na
 
 // Rota para o aluno visualizar o próprio projeto
 Route::get('/aluno/projeto/{id}', [ProjetoController::class, 'show'])->name('aluno.projeto.show');
+
+//salvar alterações do projeto
+Route::put('/aluno/projeto/{id}', [ProjetoController::class, 'update'])->name('projeto.update');
+
 
 // Rotas de atividades para o professor gerenciar
 Route::get('/atividades', [AtividadeController::class, 'index']);

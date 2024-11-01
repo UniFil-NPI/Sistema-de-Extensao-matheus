@@ -1,4 +1,4 @@
-<!-- AlunoEntry.vue -->
+    <!-- AlunoEntry.vue -->
 <template>
     <div class="container">
         <div class="orange-bg">
@@ -13,11 +13,11 @@
 import { Inertia } from '@inertiajs/inertia';
 
 function redirectToRegister() {
-    Inertia.visit('/registerAluno'); // Rota para a tela de registro do aluno
+    return route('/registerAluno'); // Rota para a tela de registro do aluno
 }
 
 function redirectToLogin() {
-    Inertia.visit('/loginAluno'); // Rota para a tela de login do aluno
+    Inertia.location('/loginAluno'); // Rota para a tela de login do aluno
 }
 </script>
 

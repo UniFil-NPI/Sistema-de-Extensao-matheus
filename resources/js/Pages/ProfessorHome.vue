@@ -15,7 +15,7 @@
                 <ul>
                     <li><a href="#">Início</a></li>
                     <li><a href="#" @click="openAlunosModal">Alunos</a></li> <!-- Botão Alunos -->
-                    <li><a href="#" @click="showAtividades = true">Atividades</a></li>
+                    <li><a href="#" @click="toggleAtividades">Atividades</a></li>
                     <li><a href="/gerenciarProjetos">Projetos</a></li>
                 </ul>
             </div>
@@ -36,7 +36,6 @@
                             <h3>{{ atividade.titulo }}</h3>
                             <p>{{ atividade.descricao }}</p>
                             <p>Data de Entrega: {{ formatDate(atividade.dataEntrega) }}</p>
-                            <p v-if="atividade.concluida" class="concluida">Concluída</p>
                         </li>
                     </ul>
                 </div>
@@ -151,6 +150,14 @@ const alunos = ref([]);
 const currentAluno = ref({});
 const search = ref('');
 
+
+const toggleAtividades = () => {
+    showAtividades.value = !showAtividades.value;
+    if (showAtividades.value) {
+        fetchAtividades();
+    }
+};
+
 const openAlunosModal = () => {
     fetchAlunos();
     isAlunosModalOpen.value = true;
@@ -256,6 +263,9 @@ onMounted(() => {
     fetchAtividades();
 });
 </script>
+
+
+
 <style scoped>
 /* Estilização global */
 .container {
