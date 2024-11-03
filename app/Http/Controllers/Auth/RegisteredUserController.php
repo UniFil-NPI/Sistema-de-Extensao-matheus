@@ -20,7 +20,7 @@ class RegisteredUserController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('RegisterAluno');
+        return Inertia::render('registerAluno');
     }
 
     /**
@@ -39,7 +39,7 @@ class RegisteredUserController extends Controller
         ]);
 
         $aluno = Aluno::create([
-            'nome' => $request->name,
+            'nome' => $request->nome,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'faseExtensao' => $request->faseExtensao,

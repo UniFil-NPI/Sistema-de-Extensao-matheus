@@ -74,6 +74,8 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { Inertia } from '@inertiajs/inertia';
+import { defineProps } from 'vue';
+
 
 const showAtividades = ref(false);
 const atividades = ref([]);
@@ -81,11 +83,31 @@ const isAtividadeModalOpen = ref(false);
 const currentAtividade = ref({});
 const link = ref('');
 
+
+const props = defineProps(['aluno']); // Obtendo o aluno como uma prop
+//const aluno = ref({}); // Aluno deve ser passado como prop ou inicializado de alguma forma
+const projetoId = ref(null); //adicionado
+
+//adicionado
+onMounted(() => {
+    if (props.aluno && props.aluno.id) {
+        projetoId.value = props.aluno.id; // Definindo o ID do projeto igual ao ID do aluno
+    } else {
+        console.error("Aluno não definido ou ID do aluno não disponível");
+    }
+    fetchAtividades();
+});
+
+
 // Função para redirecionar para a página do projeto do aluno
 const abrirProjeto = () => {
-    // Substitua '1' pelo ID real do projeto ou a lógica para obter o ID do projeto do aluno
-    window.location.href = `/aluno/projeto/1`;
+    if (!projetoId.value) {//.value
+        console.error("ID do projeto não definido");
+        return;
+    }
+    window.location.href = `/aluno/projeto/${projetoId.value}`;
 };
+
 
 
 // Função para buscar as atividades do backend
@@ -145,8 +167,6 @@ function redirectToCriarProjeto() {
   Inertia.visit('/aluno/criar-projeto');
 }
 
-// Fetch atividades quando o componente é montado
-onMounted(fetchAtividades);
 </script>
 
 <style>

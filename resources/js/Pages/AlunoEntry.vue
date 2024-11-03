@@ -13,11 +13,11 @@
 import { Inertia } from '@inertiajs/inertia';
 
 function redirectToRegister() {
-    return route('/registerAluno'); // Rota para a tela de registro do aluno
+    window.location.href = '/registerAluno'; // Rota para a tela de registro do aluno
 }
 
 function redirectToLogin() {
-    Inertia.location('/loginAluno'); // Rota para a tela de login do aluno
+    window.location.href = '/loginAluno'; // Rota para a tela de login do aluno
 }
 </script>
 

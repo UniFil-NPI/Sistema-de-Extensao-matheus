@@ -37,9 +37,17 @@ const submit = () => {           SER IMPLEMENTADO APÓS COLOCAR SENHA NO BANCO D
 */
 
 const submit = () => {
-    form.post(route('loginAluno.post'));
-        window.location.href = route('alunoHome');
+    form.post(route('loginAluno.post'), {
+        onSuccess: () => {
+            // Redireciona somente se o login for bem-sucedido
+            window.location.href = route('alunoHome');
+        },
+        onError: () => {
+            alert('Falha no login. Verifique suas credenciais e tente novamente.');
+        }
+    });
 };
+
 
 function redirectToForgotPassword() {
     Inertia.visit('/forgotPasswordAluno'); // Rota para a tela de recuperação de senha do aluno

@@ -25,6 +25,8 @@
                 <input type="text" id="nome-projeto" v-model="form.nomeProjeto" required>
 
                 <button type="submit">Enviar</button>
+                <p v-if="message">{{ message }}</p>
+
             </form>
             
         </div>
@@ -50,14 +52,14 @@ const message = ref('');
 
 const submit = async () => {
     try {
-        await form.post(route('registerAluno'), {
-            onFinish: () => {},
-            onSuccess: () => {
-                message.value = 'Aluno registrado com sucesso!';
-                form.reset();
-                // Redireciona para a página do aluno
-                Inertia.visit('/alunoHome');
+        await form.post(route('registerAluno.store'), { // Utilize a nova rota aqui
+            onFinish: () => {
+                if (Object.keys(form.errors).length === 0) { // Verifica se não há erros
+                    message.value = 'Aluno registrado com sucesso!';
+                    form.reset();
+                }
             },
+           
             onError: () => {
                 message.value = 'Erro ao registrar aluno. Verifique os dados e tente novamente.';
             }

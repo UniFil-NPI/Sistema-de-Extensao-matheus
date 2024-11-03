@@ -25,6 +25,15 @@ Route::get('/', function () {
 Route::get('/registerAluno', [RegisteredUserController::class, 'create'])->name('registerAluno');
 Route::post('/registerAluno', [RegisteredUserController::class, 'store'])->name('registerAluno.post');
 
+// Rota para processar o registro do aluno
+Route::post('/registerAluno', [App\Http\Controllers\RegisterAlunoController::class, 'store'])->name('registerAluno.store');
+
+// Redirecionar a rota padrão de login para loginAluno
+Route::get('/login', function () {
+    return redirect()->route('loginAluno');
+})->name('login');
+
+
 // Rotas de autenticação
 Route::get('/loginProfessor', function () {
     return Inertia::render('LoginProfessor');
@@ -33,7 +42,7 @@ Route::get('/loginProfessor', function () {
 Route::post('/loginProfessor', [LoginController::class, 'loginProfessor'])->name('loginProfessor.post');
 
 // Rota aluno Entry
-Route::get('/alunoEntry', [AlunoController::class, 'showAlunoEntry']); //nao funfa??
+Route::get('/alunoEntry', [AlunoController::class, 'showAlunoEntry'])->name('aluno.entry'); 
 
 //rota de listar alunos
 Route::get('/alunos', [AlunoController::class, 'index'])->name('alunos.index');
@@ -54,10 +63,12 @@ Route::get('/loginAluno', function () {
 
 Route::post('/loginAluno', [AlunoController::class, 'login'])->name('loginAluno.post');
 
-// Rota para a tela inicial do aluno (protegida por middleware de autenticação)
-Route::get('/alunoHome', function () {
-    return Inertia::render('AlunoHome');
-})->name('alunoHome');
+Route::get('/aluno/home', [AlunoController::class, 'home'])->name('alunoHome')->middleware('auth:alunos');
+
+// Página inicial do aluno (certifique-se de que esta rota está definida)
+//Route::get('/aluno/home', function () {
+  //  return Inertia::render('AlunoHome'); // Renderiza a página do aluno
+//})->name('alunoHome');
 
 // Rota para o aluno criar um projeto
 Route::get('/aluno/criar-projeto', [ProjetoController::class, 'create'])->name('projetos.create');
@@ -77,10 +88,10 @@ Route::get('/gerenciarProjetos', [ProfessorController::class, 'index'])->name('g
 Route::get('/professor/projetos/{id}', [ProfessorController::class, 'show'])->name('professor.projetos.show');
 
 // Rota para o aluno visualizar o próprio projeto
-Route::get('/aluno/projeto/{id}', [ProjetoController::class, 'show'])->name('aluno.projeto.show');
+Route::get('/aluno/projeto/{id}', [ProjetoController::class, 'show'])->name('aluno.projeto.show')->middleware('auth:alunos');;
 
 //salvar alterações do projeto
-Route::put('/aluno/projeto/{id}', [ProjetoController::class, 'update'])->name('projeto.update');
+Route::put('/aluno/projeto/{id}', [ProjetoController::class, 'update'])->name('projeto.update')->middleware('auth:alunos');
 
 
 // Rotas de atividades para o professor gerenciar

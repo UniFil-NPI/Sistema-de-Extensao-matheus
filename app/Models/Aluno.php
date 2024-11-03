@@ -24,4 +24,8 @@ class Aluno extends Authenticatable
     //{
     //    $this->attributes['password'] = Hash::make($value);
     //}
+    public function projeto()
+{
+    return $this->hasOne(Projeto::class, 'aluno_id');
+}
 }
