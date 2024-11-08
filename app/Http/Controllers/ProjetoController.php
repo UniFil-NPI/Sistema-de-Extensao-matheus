@@ -9,33 +9,6 @@ use Inertia\Inertia;
 
 class ProjetoController extends Controller
 {
-    
-    // Método para exibir o projeto do aluno
-    /*public function show($id)
-    {
-        // Obtenha o aluno autenticado usando o guard 'alunos'
-        $aluno = Auth::guard('alunos')->user();
-
-
-        // Verifique se o aluno está autenticado
-        if (!$aluno) {
-            return redirect()->route('loginAluno')->withErrors('Você precisa estar logado para acessar essa página.');
-        }
-
-        // Busque o projeto que corresponde ao ID fornecido e pertence ao aluno autenticado
-        $projeto = Projeto::where('id', $id)->where('aluno_id', $aluno->id)->first();
-
-        // Verifique se o projeto foi encontrado
-        if (!$projeto) {
-            return redirect()->route('alunoHome')->withErrors('Projeto não encontrado ou não autorizado.');
-        }
-
-        // Renderize a view 'Aluno/Projeto' com os dados do projeto
-        return Inertia::render('Aluno/Projeto', [
-            'projeto' => $projeto,
-        ]);
-    }
-*/
 public function show()
 {
     // Obtenha o aluno autenticado usando o guard 'alunos'
@@ -78,10 +51,6 @@ public function show()
         'dataFim' => 'required|date|after_or_equal:dataInicio   ',
 
     ]);
-    // Mapeia dataFim para dataFim antes de salvar no banco
-    //$validatedData['dataFim'] = $validatedData['dataFim'];
-    //unset($validatedData['dataFim']);
-
     
     // Temporariamente definindo um aluno_id padrão
     $aluno_id = '1'; // Ajuste este valor conforme necessário
@@ -99,33 +68,6 @@ public function show()
     // Redireciona o aluno para a página inicial do aluno com uma mensagem de sucesso
     return redirect()->route('projeto.show', $projeto->id)->with('success', 'Projeto criado com sucesso!');
 }
-
-/*public function update(Request $request, $id)   
-{
-    // Validação dos campos que podem ser enviados
-    $validatedData = $request->validate([
-        'objetivos' => 'array',
-        'tecnologias' => 'array',
-        'cronograma' => 'array',
-        'informacoes_avulsas' => 'array',
-    ]); 
-
-    // Encontra o projeto pelo ID
-    $projeto = Projeto::findOrFail($id);
-
-
-    // Atualiza os campos com os dados validados
-    $projeto->objetivos = $validatedData['objetivos'] ?? $projeto->objetivos;
-    $projeto->tecnologias = $validatedData['tecnologias'] ?? $projeto->tecnologias;
-    $projeto->cronograma = $validatedData['cronograma'] ?? $projeto->cronograma;
-    $projeto->informacoes_avulsas = $validatedData['informacoes_avulsas'] ?? $projeto->informacoes_avulsas;
-
-    $projeto->save();
-
-    // Retorna uma resposta de sucesso em JSON
-    return response()->json(['message' => 'Projeto atualizado com sucesso!'], 200);
-}
-    */
 
     public function update(Request $request)
 {

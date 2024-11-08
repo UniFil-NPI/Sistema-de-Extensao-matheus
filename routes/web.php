@@ -22,11 +22,11 @@ Route::get('/', function () {
 });
 
 // Rota de registro para alunos utilizando o RegisteredUserController
-Route::get('/registerAluno', [RegisteredUserController::class, 'create'])->name('registerAluno');
-Route::post('/registerAluno', [RegisteredUserController::class, 'store'])->name('registerAluno.post');
+Route::get('/RegisterAluno', [RegisteredUserController::class, 'create'])->name('registerAluno');
+//Route::post('/registerAluno', [RegisteredUserController::class, 'store'])->name('registerAluno.post');
 
 // Rota para processar o registro do aluno
-Route::post('/registerAluno', [App\Http\Controllers\RegisterAlunoController::class, 'store'])->name('registerAluno.store');
+Route::post('/RegisterAluno', [App\Http\Controllers\RegisterAlunoController::class, 'store'])->name('registerAluno.store');
 
 // Redirecionar a rota padrão de login para loginAluno
 Route::get('/login', function () {
@@ -83,6 +83,9 @@ Route::get('/professorHome', function () {
 
 // Nova rota para exibir a lista de projetos com funcionalidade de busca
 Route::get('/gerenciarProjetos', [ProfessorController::class, 'index'])->name('gerenciarProjetos');
+
+Route::post('/professor/avaliar-projeto/{id}', [ProfessorController::class, 'avaliarProjeto'])->name('professor.avaliar-projeto');
+
 
 // Rota para exibir um projeto específico para avaliação
 Route::get('/professor/projetos/{id}', [ProfessorController::class, 'show'])->name('professor.projetos.show');

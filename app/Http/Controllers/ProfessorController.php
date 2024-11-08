@@ -29,6 +29,19 @@ class ProfessorController extends Controller
     ]);
 }
 
+public function avaliarProjeto(Request $request, $id)
+{
+    $request->validate([
+        'nota' => 'required|numeric|min:0|max:10',
+    ]);
+
+    $projeto = Projeto::findOrFail($id);
+    $projeto->nota = $request->input('nota');
+    $projeto->save();
+
+    return redirect()->back()->with('success', 'Nota atualizada com sucesso.');
+}
+
 
     // Método para exibir um projeto específico para avaliação
     public function show($id)

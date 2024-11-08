@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('alunos', function (Blueprint $table) {
-            $table->string('password')->after('email');
+        Schema::table('projetos', function (Blueprint $table) {
+            $table->decimal('nota', 3, 1)->nullable()->after('aluno_id'); // Campo para a nota (0.0 a 10.0)
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('alunos', function (Blueprint $table) {
-            $table->dropColumn('password');
+        Schema::table('projetos', function (Blueprint $table) {
+            $table->dropColumn('nota');
         });
     }
 };

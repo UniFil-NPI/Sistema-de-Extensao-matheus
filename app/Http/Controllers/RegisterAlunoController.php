@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use App\Models\Projeto;
+use Carbon\Carbon;
 
 class RegisterAlunoController extends Controller
 {
@@ -34,8 +36,9 @@ class RegisterAlunoController extends Controller
 
         // Cria um projeto e associa ao aluno
     $projeto = Projeto::create([
-        'nomeProjeto' => $request->nomeProjeto,
+        'titulo' => $request->nomeProjeto,
         'aluno_id' => $aluno->id, // Associa o projeto ao aluno pelo ID
+        'dataInicio'=> Carbon::now()
     ]);
         // Log para confirmar que o aluno foi criado com sucesso
         Log::info('Aluno registrado com sucesso:', ['aluno_id' => $aluno->id]);
@@ -43,4 +46,5 @@ class RegisterAlunoController extends Controller
         // Redireciona o aluno para a página inicial ou onde você desejar
         return redirect()->route('alunoHome');
     }
+    
 }

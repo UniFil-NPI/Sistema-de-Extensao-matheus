@@ -24,13 +24,32 @@
       >
         <h2>{{ projeto.titulo }}</h2>
         <p><strong>Aluno:</strong> {{ projeto.nomeAluno }}</p>
-        <button @click="avaliarProjeto(projeto.id)">Avaliar Projeto</button>
+        <button @click="avaliarProjeto(projeto)">Avaliar Projeto</button>
       </div>
     </div>
   </div>
+
+  <!-- Modal de Avaliação -->
+<div v-if="mostrarModal" class="modal-overlay">
+  <div class="modal-content">
+    <h3>Avaliar Projeto</h3>
+    <p><strong>Título:</strong> {{ projetoSelecionado?.titulo }}</p>
+    <p><strong>Aluno:</strong> {{ projetoSelecionado?.nomeAluno }}</p>
+    
+    <label for="nota">Nota:</label>
+    <input v-model="nota" type="number" step="0.1" min="0" max="10" />
+
+    <div class="modal-buttons">
+      <button @click="salvarNota">Salvar</button>
+      <button @click="fecharModal">Cancelar</button>
+    </div>
+  </div>
+</div>
+
 </template>
 
 <script setup>
+import { Inertia } from '@inertiajs/inertia';
 import { ref, computed } from 'vue';
 import { usePage } from '@inertiajs/vue3'; // Importar para acessar os dados retornados pela Inertia
 
@@ -47,13 +66,63 @@ const filteredProjects = computed(() => {
   );
 });
 
-function avaliarProjeto(id) {
-  console.log(`Redirecionando para a avaliação do projeto ${id}`);
-  // Inertia.visit(`/professor/avaliar-projeto/${id}`);
+// Variáveis para o modal
+const mostrarModal = ref(false);
+const projetoSelecionado = ref(null);
+const nota = ref(null);
+
+function avaliarProjeto(projeto) {
+  projetoSelecionado.value = projeto;
+  nota.value = projeto.nota || ''; // Preenche com a nota existente, se houver
+  mostrarModal.value = true;
 }
+
+function fecharModal() {
+  mostrarModal.value = false;
+  projetoSelecionado.value = null;
+  nota.value = null;
+}
+
+function salvarNota() {
+    Inertia.post(`/professor/avaliar-projeto/${projetoSelecionado.value.id}`, { nota: nota.value }, {
+      onSuccess: () => {
+        // Atualiza a nota no frontend
+        projetoSelecionado.value.nota = nota.value;
+        fecharModal();
+      },
+    });
+  }
 </script>
 
 <style scoped>
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  text-align: center;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+
+
 .container {
   padding: 20px;
 }

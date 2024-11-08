@@ -13,7 +13,7 @@
 import { Inertia } from '@inertiajs/inertia';
 
 function redirectToRegister() {
-    window.location.href = '/registerAluno'; // Rota para a tela de registro do aluno
+    window.location.href = '/RegisterAluno'; // Rota para a tela de registro do aluno
 }
 
 function redirectToLogin() {

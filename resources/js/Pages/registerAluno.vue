@@ -12,6 +12,10 @@
                 <label for="password">Senha: <span class="required">*</span></label>
                 <input type="password" id="password" v-model="form.password" required>
 
+                <label for="password_confirmation">Confirmar Senha: <span class="required">*</span></label>
+                <input type="password" id="password_confirmation" v-model="form.password_confirmation" required>
+
+
 
                 <label for="fase-extensao">Fase da Extensão: <span class="required">*</span></label>
                 <select id="fase-extensao" v-model="form.faseExtensao" required>
