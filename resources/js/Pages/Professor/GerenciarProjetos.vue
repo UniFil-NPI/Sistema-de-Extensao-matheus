@@ -24,6 +24,7 @@
       >
         <h2>{{ projeto.titulo }}</h2>
         <p><strong>Aluno:</strong> {{ projeto.nomeAluno }}</p>
+        <p><strong>Nota:</strong> {{ projeto.nota ?? 'Não avaliado' }}</p> <!-- Exibe a nota -->
         <button @click="avaliarProjeto(projeto)">Avaliar Projeto</button>
       </div>
     </div>

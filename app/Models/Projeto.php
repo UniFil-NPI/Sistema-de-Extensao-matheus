@@ -10,7 +10,7 @@ class Projeto extends Model
     use HasFactory;
 
     // Defina os campos que podem ser preenchidos
-    protected $fillable = ['titulo', 'descricao','dataInicio','dataFim','objetivos','tecnologias','cronograma','informacoes_avulsas'];
+    protected $fillable = ['titulo', 'descricao','dataInicio','dataFim','objetivos','tecnologias','cronograma','informacoes_avulsas','nota'];
 
     public function aluno()
 {
