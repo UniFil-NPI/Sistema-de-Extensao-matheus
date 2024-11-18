@@ -24,8 +24,14 @@ class ProfessorController extends Controller
 
     // Retorna a view 'GerenciarProjetos' com os dados dos projetos
     return Inertia::render('Professor/GerenciarProjetos', [
-        'projetos' => $projetos,
-        'search' => $search,
+        'projetos' => $projetos->map(function ($projeto) {
+            return [
+                'id' => $projeto->id,
+                'titulo' => $projeto->titulo,
+                'nomeAluno' => $projeto->aluno->nome ?? 'Não associado',
+                'nota' => $projeto->nota, // Adicione a nota aqui
+            ];
+        }),
     ]);
 }
 
