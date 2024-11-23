@@ -73,6 +73,8 @@ public function show()
 {
     // Validação dos campos que podem ser enviados
     $validatedData = $request->validate([
+        'titulo' => 'nullable|string|max:255', // Validação para o título
+        'descricao' => 'nullable|string', // Validação para a descrição
         'objetivos' => 'array',
         'tecnologias' => 'array',
         'cronograma' => 'array',
@@ -86,6 +88,8 @@ public function show()
     $projeto = Projeto::where('aluno_id', $aluno->id)->firstOrFail();
 
     // Atualiza os campos com os dados validados
+    $projeto->titulo = $validatedData['titulo'] ?? $projeto->titulo;
+    $projeto->descricao = $validatedData['descricao'] ?? $projeto->descricao;
     $projeto->objetivos = $validatedData['objetivos'] ?? $projeto->objetivos;
     $projeto->tecnologias = $validatedData['tecnologias'] ?? $projeto->tecnologias;
     $projeto->cronograma = $validatedData['cronograma'] ?? $projeto->cronograma;

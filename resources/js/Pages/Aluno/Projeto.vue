@@ -1,14 +1,28 @@
 <template>
   <div class="portfolio-container">
     <div class="orange-banner">
-      <h1>{{ projeto.titulo }}</h1>
+      <!-- Campo de edição do título -->
+      <input 
+        v-model="projeto.titulo" 
+        class="edit-title" 
+        placeholder="Digite o título do projeto"
+      />
+      <button @click="salvarTitulo" class="save-btn">Salvar Título</button>
     </div>
     
+
     <section class="portfolio-section">
       <h2>Descrição do Projeto</h2>
-      <p>{{ projeto.descricao }}</p>
+      <!-- Campo de edição da descrição -->
+      <textarea 
+        v-model="projeto.descricao" 
+        class="edit-description" 
+        placeholder="Digite a descrição do projeto"
+      ></textarea>
+      <button @click="salvarDescricao" class="save-btn">Salvar Descrição</button>
     </section>
 
+      
     <section class="portfolio-section">
       <h2>Datas</h2>
       <p><strong>Data de Início:</strong> {{ projeto.dataInicio }}</p>
@@ -140,12 +154,14 @@ const adicionarInformacao = () => {
 // Função para salvar o projeto via API
 const salvarProjeto = async () => {
   try {
-    const projetoData = { ...projeto.value };
-    
-    // Remover campos que não precisam ser atualizados
-    delete projetoData.descricao;
-    delete projetoData.dataInicio;
-    delete projetoData.dataFim;
+    const projetoData = { 
+      titulo: projeto.value.titulo,
+      descricao: projeto.value.descricao,
+      objetivos: projeto.value.objetivos,
+      tecnologias: projeto.value.tecnologias,
+      cronograma: projeto.value.cronograma,
+      informacoes_avulsas: projeto.value.informacoes_avulsas,
+    };
 
     await axios.put(`/aluno/projeto/${projeto.value.id}`, projetoData); // Corrigido
     alert('Projeto salvo com sucesso!');
@@ -155,8 +171,28 @@ const salvarProjeto = async () => {
     alert('Erro ao salvar projeto.');
   }
 };
-</script>
 
+const salvarTitulo = async () => {
+  try {
+    await axios.put(`/aluno/projeto/${projeto.value.id}`, { titulo: projeto.value.titulo });
+    alert('Título salvo com sucesso!');
+  } catch (error) {
+    console.error('Erro ao salvar título:', error);
+    alert('Erro ao salvar título.');
+  }
+};
+
+const salvarDescricao = async () => {
+  try {
+    await axios.put(`/aluno/projeto/${projeto.value.id}`, { descricao: projeto.value.descricao });
+    alert('Descrição salva com sucesso!');
+  } catch (error) {
+    console.error('Erro ao salvar descrição:', error);
+    alert('Erro ao salvar descrição.');
+  }
+};
+
+</script>
 <style scoped>
 /* Estilo geral da página */
 .portfolio-container {
@@ -172,7 +208,7 @@ const salvarProjeto = async () => {
 
 /* Banner Laranja */
 .orange-banner {
-  background-color: #f57c00;
+  background-color: #F29400;
   color: white;
   padding: 15px;
   text-align: center;
@@ -223,9 +259,10 @@ textarea {
   margin-bottom: 10px;
 }
 
+
 /* Botões */
 button {
-  background-color: #f57c00;
+  background-color: #F29400;
   color: white;
   border: none;
   padding: 8px 12px;
@@ -237,7 +274,7 @@ button {
 }
 
 button:hover {
-  background-color: #e06b00;
+  background-color: #F29400;
 }
 
 /* Botão de salvar */
@@ -272,5 +309,49 @@ button:hover {
     font-size: 16px;
   }
 }
+
+.save-btn {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background-color: #F29400;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.save-btn:hover {
+  background-color: #F29400;
+}
+
+
+.edit-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.edit-description {
+  font-size: 16px;
+  color: #333;
+  width: 100%;
+  height: 100px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+  margin-top: 5px;
+}
+
+
+
+
 </style>
 
