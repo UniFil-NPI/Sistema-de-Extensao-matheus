@@ -13,10 +13,10 @@
             <!-- Barra lateral -->
             <div class="sidebar">
                 <ul>
-                    <li><a href="#">Início</a></li>
-                    <li><a href="#" @click="openAlunosModal">Alunos</a></li> <!-- Botão Alunos -->
-                    <li><a href="#" @click="toggleAtividades">Atividades</a></li>
-                    <li><a href="/gerenciarProjetos">Projetos</a></li>
+                    <li><a href="#" class="sidebar-button">Início</a></li>
+                    <li><a href="#"class="sidebar-button" @click="openAlunosModal">Alunos</a></li> <!-- Botão Alunos -->
+                    <li><a href="#"class="sidebar-button" @click="toggleAtividades">Atividades</a></li>
+                    <li><a href="/gerenciarProjetos" class="sidebar-button">Projetos</a></li>
                 </ul>
             </div>
 
@@ -300,8 +300,30 @@ onMounted(() => {
 
 .sidebar ul li a {
     text-decoration: none;
-    color: #333;
+    color: #ffffff;
 }
+
+/* Botões destacados na barra lateral */
+.sidebar-button {
+    display: block;
+    background-color: #F29400; /* Laranja vibrante */
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    padding: 10px 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-button:hover {
+    background-color: #ff9e30; /* Laranja mais claro ao passar o mouse */
+    transform: scale(1.05); /* Efeito de zoom leve */
+    text-decoration: none;
+}
+
 
 .main-content {
     flex: 1;
