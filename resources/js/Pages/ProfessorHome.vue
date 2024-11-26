@@ -8,12 +8,17 @@
             </div>
         </div>
 
+        <!-- Nome do aluno logado -->
+        <div class="professor-info">
+                <span>Bem-vindo, Professor(a)</span>
+            </div>
+
         <!-- Conteúdo principal -->
         <div class="container">
             <!-- Barra lateral -->
             <div class="sidebar">
                 <ul>
-                    <li><a href="#" class="sidebar-button">Início</a></li>
+                    <li><span class="sidebar-selected">Início</span></li>
                     <li><a href="#"class="sidebar-button" @click="openAlunosModal">Alunos</a></li> <!-- Botão Alunos -->
                     <li><a href="#"class="sidebar-button" @click="toggleAtividades">Atividades</a></li>
                     <li><a href="/gerenciarProjetos" class="sidebar-button">Projetos</a></li>
@@ -69,7 +74,8 @@
                                 <td>{{ aluno.faseExtensao }}</td>
                                 <td>{{ aluno.nomeProjeto }}</td>
                                 <td>
-                                    <button @click="editAluno(aluno)">Editar</button>
+                                    <button class="btn-editar" @click="editAluno(aluno)">Editar</button>
+
                                 </td>
                             </tr>
                         </tbody>
@@ -123,7 +129,8 @@
                         <label for="nomeProjeto">Nome do Projeto:</label>
                         <input type="text" id="nomeProjeto" v-model="currentAluno.nomeProjeto" required>
 
-                        <button type="submit">Salvar</button>
+                        <button class="btn-salvar" type="submit">Salvar</button>
+
                     </form>
                 </div>
             </div>
@@ -324,6 +331,25 @@ onMounted(() => {
     text-decoration: none;
 }
 
+/* Estilo para o texto selecionado */
+.sidebar-selected {
+  color: #F29400; /* Laranja vibrante */
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  display: block;
+  padding: 10px 15px;
+  cursor: default; /* Indica que não é clicável */
+}
+
+/* Remove qualquer aparência de link ou botão */
+.sidebar-selected:hover {
+  text-decoration: none;
+  background-color: transparent; /* Nenhuma cor de fundo no hover */
+}
+
+
+
 
 .main-content {
     flex: 1;
@@ -425,6 +451,38 @@ onMounted(() => {
   max-width: 90%;
   animation: fadeIn 0.3s ease-in-out;
 }
+
+.btn-editar {
+  background-color: #007bff; /* Cor azul */
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-editar:hover {
+  background-color: #0056b3; /* Azul mais escuro no hover */
+}
+
+.btn-salvar {
+  background-color: #28a745; /* Cor verde */
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-salvar:hover {
+  background-color: #218838; /* Verde mais escuro no hover */
+}
+
 
 .close {
   color: #aaa;
@@ -598,5 +656,13 @@ select {
     max-width: 200px;
     height: auto;
 }
+
+.professor-info {
+    font-size: 20px; /* Aumentando o tamanho do texto */
+    font-weight: bold;
+    color: #F29400;
+    margin-left: 20px; /* Adiciona afastamento do canto direito da tela */
+}
+
 
 </style>

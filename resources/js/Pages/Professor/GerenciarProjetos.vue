@@ -2,7 +2,7 @@
   <div class="container">
     <!-- Faixa laranja no topo -->
     <div class="orange-bg">
-      <h1>Gerenciar Projetos</h1>
+      <h1 style="font-size: 3rem;">Gerenciar Projetos</h1>
     </div>
 
     <!-- Campo de busca -->
@@ -57,15 +57,51 @@ import { usePage } from '@inertiajs/vue3'; // Importar para acessar os dados ret
 const { props } = usePage(); // Obter as propriedades passadas pela Inertia
 const searchQuery = ref('');
 const projetos = ref(props.projetos); // Atribuir os projetos passados pela Inertia
+const listaProjetos = ref([]); // Lista de projetos
 
-const filteredProjects = computed(() => {
-  if (!searchQuery.value) {
-    return projetos.value;
-  }
-  return projetos.value.filter(projeto =>
-    projeto.titulo.toLowerCase().includes(searchQuery.value.toLowerCase())
-  );
+
+const fetchListaProjetos = async () => {
+    try {
+        const response = await axios.get('/projetos');
+        listaProjetos.value = response.data;
+    } catch (error) {
+        console.error('Erro ao buscar projetos:', error);
+    }
+};
+
+const filteredListaProjetos = computed(() => {
+    let filteredList = listaProjetos.value;
+    if (searchProjeto.value) {
+        filteredList = filteredList.filter(projeto =>
+            projeto.nome.toLowerCase().includes(searchProjeto.value.toLowerCase())
+        );
+    }
+    return filteredList.sort((a, b) => a.nome.localeCompare(b.nome));
 });
+
+const searchProjeto = async () => {
+    await fetchListaProjetos(); // Buscar projetos sempre que uma nova pesquisa for realizada
+};
+const openProjetosModal = () => {
+    fetchListaProjetos(); // Carregar os projetos
+    isProjetosModalOpen.value = true;
+};
+
+const closeProjetosModal = () => {
+    isProjetosModalOpen.value = false;
+};
+
+
+function fetchProjects() {
+  Inertia.get('/gerenciarProjetos', { search: searchQuery.value }, {
+    preserveState: true, // Preserva o estado atual da página
+    onSuccess: (page) => {
+      projetos.value = page.props.projetos;
+    },
+  });
+}
+
+
 
 // Variáveis para o modal
 const mostrarModal = ref(false);

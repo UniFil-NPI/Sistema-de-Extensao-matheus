@@ -14,12 +14,13 @@ class ProfessorController extends Controller
     // Captura a query de busca se existir
     $search = $request->input('search');
 
-    // Busca os projetos no banco de dados, aplicando filtro de busca pelo título
-    $projetos = Projeto::when($search, function ($query, $search) {
-        return $query->where('titulo', 'like', "%{$search}%"); // Filtra apenas pelo título
+     // Busca os projetos no banco de dados, aplicando filtros para título ou nome do aluno
+     $projetos = Projeto::when($search, function ($query, $search) {
+        return $query->where('titulo', 'like', "%{$search}%")
+                     ->orWhereHas('aluno', function ($q) use ($search) {
+                         $q->where('nome', 'like', "%{$search}%");
+                     });
     })->get();
-
-    
     
 
     // Retorna a view 'GerenciarProjetos' com os dados dos projetos
@@ -32,7 +33,7 @@ class ProfessorController extends Controller
                 'nota' => $projeto->nota, // Adicione a nota aqui
             ];
         }),
-    ]);
+    ]);     
 }
 
 public function avaliarProjeto(Request $request, $id)

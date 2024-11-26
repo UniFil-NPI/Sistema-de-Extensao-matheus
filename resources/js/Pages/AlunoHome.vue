@@ -8,12 +8,17 @@
             </div>
         </div>
 
+        <!-- Nome do aluno logado -->
+        <div class="aluno-info">
+                <span>Bem-vindo, {{ aluno.nome }}</span>
+            </div>
+
         <!-- Conteúdo principal -->
         <div class="container">
             <!-- Barra lateral -->
             <div class="sidebar">
                 <ul>
-                    <li><a href="#" class="sidebar-button">Início</a></li>
+                    <li><span class="sidebar-selected">Início</span></li>
                     <li><a href="#" class="sidebar-button" @click="showAtividades = true">Atividades</a></li>
                     <li><a href="#" class="sidebar-button" @click="abrirProjeto">Projeto</a></li>
                     <!---<li><a href="#" @click="redirectToCriarProjeto">Criar Projeto</a></li>-->
@@ -224,6 +229,24 @@ body {
     padding: 20px;
 }
 
+/* Estilo para o texto selecionado */
+.sidebar-selected {
+  color: #F29400; /* Laranja vibrante */
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  display: block;
+  padding: 10px 15px;
+  cursor: default; /* Indica que não é clicável */
+}
+
+/* Remove qualquer aparência de link ou botão */
+.sidebar-selected:hover {
+  text-decoration: none;
+  background-color: transparent; /* Nenhuma cor de fundo no hover */
+}
+
+
 /* Botões destacados na barra lateral */
 .sidebar-button {
     display: block;
@@ -364,6 +387,11 @@ body {
     max-width: 200px;
     height: auto;
 }
-
+.aluno-info {
+    font-size: 20px;
+    font-weight: bold;
+    color: #F29400;
+    margin-left: 20px;
+}
 
 </style>
