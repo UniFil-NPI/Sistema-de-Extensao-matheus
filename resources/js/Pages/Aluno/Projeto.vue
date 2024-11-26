@@ -1,7 +1,6 @@
 <template>
   <div class="portfolio-container">
     <div class="orange-banner">
-      <!-- Campo de edição do título -->
       <input 
         v-model="projeto.titulo" 
         class="edit-title" 
@@ -9,11 +8,9 @@
       />
       <button @click="salvarTitulo" class="save-btn">Salvar Título</button>
     </div>
-    
 
     <section class="portfolio-section">
       <h2>Descrição do Projeto</h2>
-      <!-- Campo de edição da descrição -->
       <textarea 
         v-model="projeto.descricao" 
         class="edit-description" 
@@ -22,18 +19,27 @@
       <button @click="salvarDescricao" class="save-btn">Salvar Descrição</button>
     </section>
 
-      
-    <section class="portfolio-section">
-      <h2>Datas</h2>
-      <p><strong>Data de Início:</strong> {{ projeto.dataInicio }}</p>
-      <p><strong>Data de Fim:</strong> {{ projeto.dataFim }}</p>
-    </section>
-
     <section class="portfolio-section">
       <h2>Objetivos</h2>
       <ul class="objective-list">
         <li v-for="(objetivo, index) in projeto.objetivos" :key="index">
-          {{ objetivo }}
+          <div v-if="checklist.objetivos[index]">
+            <!-- Campo de edição do objetivo -->
+            <input 
+              v-model="editarObjetivo[index]" 
+              placeholder="Editar Objetivo"
+            />
+            <button @click="salvarObjetivo(index)">Salvar</button>
+            <button @click="removerObjetivo(index)">Excluir</button>
+          </div>
+          <div v-else>
+            {{ objetivo }}
+            <input 
+              type="checkbox" 
+              v-model="checklist.objetivos[index]" 
+              @change="handleCheckboxChange('objetivos', index)" 
+            />
+          </div>
         </li>
       </ul>
       <input v-model="novoObjetivo" placeholder="Adicionar Objetivo" />
@@ -44,7 +50,23 @@
       <h2>Tecnologias Utilizadas</h2>
       <ul class="tech-list">
         <li v-for="(tecnologia, index) in projeto.tecnologias" :key="index">
-          {{ tecnologia }}
+          <div v-if="checklist.tecnologias[index]">
+            <!-- Campo de edição da tecnologia -->
+            <input 
+              v-model="editarTecnologia[index]" 
+              placeholder="Editar Tecnologia"
+            />
+            <button @click="salvarTecnologia(index)">Salvar</button>
+            <button @click="removerTecnologia(index)">Excluir</button>
+          </div>
+          <div v-else>
+            {{ tecnologia }}
+            <input 
+              type="checkbox" 
+              v-model="checklist.tecnologias[index]" 
+              @change="handleCheckboxChange('tecnologias', index)" 
+            />
+          </div>
         </li>
       </ul>
       <input v-model="novaTecnologia" placeholder="Adicionar Tecnologia" />
@@ -55,7 +77,23 @@
       <h2>Cronograma</h2>
       <ul>
         <li v-for="(etapa, index) in projeto.cronograma" :key="index">
-          {{ etapa }}
+          <div v-if="checklist.cronograma[index]">
+            <!-- Campo de edição da etapa -->
+            <input 
+              v-model="editarEtapa[index]" 
+              placeholder="Editar Etapa"
+            />
+            <button @click="salvarEtapa(index)">Salvar</button>
+            <button @click="removerEtapa(index)">Excluir</button>
+          </div>
+          <div v-else>
+            {{ etapa }}
+            <input 
+              type="checkbox" 
+              v-model="checklist.cronograma[index]" 
+              @change="handleCheckboxChange('cronograma', index)" 
+            />
+          </div>
         </li>
       </ul>
       <input v-model="novaEtapa" placeholder="Adicionar Etapa do Cronograma" />
@@ -63,19 +101,30 @@
     </section>
 
     <section class="portfolio-section">
-      <h2>Adicionar Informações Avulsas</h2>
+      <h2>Informações Avulsas</h2>
       <ul>
         <li v-for="(info, index) in projeto.informacoes_avulsas" :key="index">
-          {{ info }}
+          <div v-if="checklist.informacoes_avulsas[index]">
+            <!-- Campo de edição da informação avulsa -->
+            <textarea 
+              v-model="editarInformacao[index]" 
+              placeholder="Editar Informação Avulsa"
+            ></textarea>
+            <button @click="salvarInformacao(index)">Salvar</button>
+            <button @click="removerInformacao(index)">Excluir</button>
+          </div>
+          <div v-else>
+            {{ info }}
+            <input 
+              type="checkbox" 
+              v-model="checklist.informacoes_avulsas[index]" 
+              @change="handleCheckboxChange('informacoes_avulsas', index)" 
+            />
+          </div>
         </li>
       </ul>
-      <br>
-      <textarea
-        v-model="novaInformacao" 
-        placeholder="Escreva alguma informação adicional..."
-      ></textarea>
-      <br>
-      <button @click="adicionarInformacao">Adicionar Informação</button>
+      <textarea v-model="novaInformacao" placeholder="Adicionar Informação Adicional..."></textarea>
+      <button @click="adicionarInformacao">Adicionar</button>
     </section>
 
     <button @click="salvarProjeto" class="save-button">Salvar Projeto</button>
@@ -86,8 +135,6 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
-
-// Configurar o Axios para enviar o token CSRF
 axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
 // Recebendo o projeto via props
@@ -103,29 +150,65 @@ const projeto = ref({
   informacoes_avulsas: [] 
 });
 
-// Copiar os dados do props para projeto após a montagem do componente
+const checklist = ref({
+  objetivos: [],
+  tecnologias: [],
+  cronograma: [],
+  informacoes_avulsas: []
+});
+
+// Variáveis temporárias para edição
+const editarObjetivo = ref([]);
+const editarTecnologia = ref([]);
+const editarEtapa = ref([]);
+const editarInformacao = ref([]);
+
+// Variáveis temporárias para adicionar itens
+const novoObjetivo = ref('');
+const novaTecnologia = ref('');
+const novaEtapa = ref('');
+const novaInformacao = ref('');
+
 onMounted(() => {
   Object.assign(projeto.value, props.projeto);
   projeto.value.titulo = props.projeto.titulo || '';
   projeto.value.descricao = props.projeto.descricao || '';
   projeto.value.dataInicio = props.projeto.dataInicio || '';
   projeto.value.dataFim = props.projeto.dataFim || '';
-  projeto.value.objetivos = JSON.parse(props.projeto.objetivos || '[]'); // Parse JSON
-  projeto.value.tecnologias = JSON.parse(props.projeto.tecnologias || '[]'); // Parse JSON
-  projeto.value.cronograma = JSON.parse(props.projeto.cronograma || '[]'); // Parse JSON
-  projeto.value.informacoes_avulsas = JSON.parse(props.projeto.informacoes_avulsas || '[]'); // Parse JSON
+  projeto.value.objetivos = JSON.parse(props.projeto.objetivos || '[]');
+  projeto.value.tecnologias = JSON.parse(props.projeto.tecnologias || '[]');
+  projeto.value.cronograma = JSON.parse(props.projeto.cronograma || '[]');
+  projeto.value.informacoes_avulsas = JSON.parse(props.projeto.informacoes_avulsas || '[]');
+  
+  // Inicializar checklist com valores falsos
+  checklist.value.objetivos = Array(projeto.value.objetivos.length).fill(false);
+  checklist.value.tecnologias = Array(projeto.value.tecnologias.length).fill(false);
+  checklist.value.cronograma = Array(projeto.value.cronograma.length).fill(false);
+  checklist.value.informacoes_avulsas = Array(projeto.value.informacoes_avulsas.length).fill(false);
 });
 
-// Variáveis temporárias para entrada de dados
-const novoObjetivo = ref('');
-const novaTecnologia = ref('');
-const novaEtapa = ref('');
-const novaInformacao = ref('');
+const handleCheckboxChange = (type, index) => {
+  if (checklist.value[type][index]) {
+    // Ativar edição
+    if (type === 'objetivos') {
+      editarObjetivo.value[index] = projeto.value.objetivos[index];
+    }
+    if (type === 'tecnologias') {
+      editarTecnologia.value[index] = projeto.value.tecnologias[index];
+    }
+    if (type === 'cronograma') {
+      editarEtapa.value[index] = projeto.value.cronograma[index];
+    }
+    if (type === 'informacoes_avulsas') {
+      editarInformacao.value[index] = projeto.value.informacoes_avulsas[index];
+    }
+  }
+};
 
-// Funções para adicionar elementos nas listas
 const adicionarObjetivo = () => {
   if (novoObjetivo.value.trim() !== '') {
     projeto.value.objetivos.push(novoObjetivo.value);
+    checklist.value.objetivos.push(false); // Adiciona checkbox
     novoObjetivo.value = '';
   }
 };
@@ -133,6 +216,7 @@ const adicionarObjetivo = () => {
 const adicionarTecnologia = () => {
   if (novaTecnologia.value.trim() !== '') {
     projeto.value.tecnologias.push(novaTecnologia.value);
+    checklist.value.tecnologias.push(false); // Adiciona checkbox
     novaTecnologia.value = '';
   }
 };
@@ -140,6 +224,7 @@ const adicionarTecnologia = () => {
 const adicionarEtapa = () => {
   if (novaEtapa.value.trim() !== '') {
     projeto.value.cronograma.push(novaEtapa.value);
+    checklist.value.cronograma.push(false); // Adiciona checkbox
     novaEtapa.value = '';
   }
 };
@@ -147,53 +232,95 @@ const adicionarEtapa = () => {
 const adicionarInformacao = () => {
   if (novaInformacao.value.trim() !== '') {
     projeto.value.informacoes_avulsas.push(novaInformacao.value);
+    checklist.value.informacoes_avulsas.push(false); // Adiciona checkbox
     novaInformacao.value = '';
   }
 };
 
-// Função para salvar o projeto via API
-const salvarProjeto = async () => {
-  try {
-    const projetoData = { 
-      titulo: projeto.value.titulo,
-      descricao: projeto.value.descricao,
-      objetivos: projeto.value.objetivos,
-      tecnologias: projeto.value.tecnologias,
-      cronograma: projeto.value.cronograma,
-      informacoes_avulsas: projeto.value.informacoes_avulsas,
-    };
-
-    await axios.put(`/aluno/projeto/${projeto.value.id}`, projetoData); // Corrigido
-    alert('Projeto salvo com sucesso!');
-  } catch (error) {
-    console.error('Erro ao salvar projeto:', error);
-    console.log(error.response.data);
-    alert('Erro ao salvar projeto.');
-  }
+const salvarTitulo = () => {
+  axios.put(`/projetos/${projeto.value.id}`, {
+    titulo: projeto.value.titulo,
+  });
 };
 
-const salvarTitulo = async () => {
-  try {
-    await axios.put(`/aluno/projeto/${projeto.value.id}`, { titulo: projeto.value.titulo });
-    alert('Título salvo com sucesso!');
-  } catch (error) {
-    console.error('Erro ao salvar título:', error);
-    alert('Erro ao salvar título.');
-  }
+const salvarDescricao = () => {
+  axios.put(`/projetos/${projeto.value.id}`, {
+    descricao: projeto.value.descricao,
+  });
 };
 
-const salvarDescricao = async () => {
-  try {
-    await axios.put(`/aluno/projeto/${projeto.value.id}`, { descricao: projeto.value.descricao });
-    alert('Descrição salva com sucesso!');
-  } catch (error) {
-    console.error('Erro ao salvar descrição:', error);
-    alert('Erro ao salvar descrição.');
-  }
+const salvarObjetivo = (index) => {
+  projeto.value.objetivos[index] = editarObjetivo.value[index];
+  checklist.value.objetivos[index] = false;
 };
 
+const salvarTecnologia = (index) => {
+  projeto.value.tecnologias[index] = editarTecnologia.value[index];
+  checklist.value.tecnologias[index] = false;
+};
+
+const salvarEtapa = (index) => {
+  projeto.value.cronograma[index] = editarEtapa.value[index];
+  checklist.value.cronograma[index] = false;
+};
+
+const salvarInformacao = (index) => {
+  projeto.value.informacoes_avulsas[index] = editarInformacao.value[index];
+  checklist.value.informacoes_avulsas[index] = false;
+};
+
+const removerObjetivo = (index) => {
+  projeto.value.objetivos.splice(index, 1);
+  checklist.value.objetivos.splice(index, 1);
+};
+
+const removerTecnologia = (index) => {
+  projeto.value.tecnologias.splice(index, 1);
+  checklist.value.tecnologias.splice(index, 1);
+};
+
+const removerEtapa = (index) => {
+  projeto.value.cronograma.splice(index, 1);
+  checklist.value.cronograma.splice(index, 1);
+};
+
+const removerInformacao = (index) => {
+  projeto.value.informacoes_avulsas.splice(index, 1);
+  checklist.value.informacoes_avulsas.splice(index, 1);
+};
+
+const salvarProjeto = () => {
+  if (!projeto.value.id) {
+    console.error("ID do projeto não encontrado.");
+    return;
+  }
+
+  axios.put(`/aluno/projeto/${projeto.value.id}`, projeto.value)
+    .then(response => {
+      console.log("Projeto atualizado com sucesso", response);
+    })
+    .catch(error => {
+      console.error("Erro ao salvar o projeto:", error);
+    });
+};
 </script>
+
+
 <style scoped>
+.info-item {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.edit-container {
+  margin-top: 20px;
+}
+
+button {
+  margin-top: 10px;
+}
+
 /* Estilo geral da página */
 .portfolio-container {
   max-width: 900px;

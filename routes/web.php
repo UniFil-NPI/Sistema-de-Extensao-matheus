@@ -65,16 +65,12 @@ Route::post('/loginAluno', [AlunoController::class, 'login'])->name('loginAluno.
 
 Route::get('/aluno/home', [AlunoController::class, 'home'])->name('alunoHome')->middleware('auth:alunos');
 
-// Página inicial do aluno (certifique-se de que esta rota está definida)
-//Route::get('/aluno/home', function () {
-  //  return Inertia::render('AlunoHome'); // Renderiza a página do aluno
-//})->name('alunoHome');
-
 // Rota para o aluno criar um projeto
 Route::get('/aluno/criar-projeto', [ProjetoController::class, 'create'])->name('projetos.create');
 
 // Rota para armazenar o projeto
 Route::post('/aluno/projetos', [ProjetoController::class, 'store'])->name('projetos.store');
+
 
 // Rotas protegidas para professores (admin)
 Route::get('/professorHome', function () {
