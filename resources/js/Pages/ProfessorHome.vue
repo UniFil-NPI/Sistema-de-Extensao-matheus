@@ -34,16 +34,23 @@
                 <button @click="showCreateModal = true" class="btn-criar-atividade">Criar Nova Atividade</button>
 
                 <!-- Lista de atividades -->
-                <div v-if="showAtividades" class="atividades-list">
-                    <h2>Lista de Atividades</h2>
-                    <ul>
-                        <li v-for="atividade in atividades" :key="atividade.id" @click="openAtividadeModal(atividade)" :class="{ completed: atividade.concluida }">
-                            <h3>{{ atividade.titulo }}</h3>
-                            <p>{{ atividade.descricao }}</p>
-                            <p>Data de Entrega: {{ formatDate(atividade.dataEntrega) }}</p>
-                        </li>
-                    </ul>
-                </div>
+<div v-if="showAtividades" class="atividades-list">
+    <h2>Lista de Atividades</h2>
+    <ul>
+        <li v-for="atividade in atividades" :key="atividade.id" :class="{ completed: atividade.concluida }">
+            <h3>{{ atividade.titulo }}</h3>
+            <p>{{ atividade.descricao }}</p>
+            <p>Data de Entrega: {{ formatDate(atividade.dataEntrega) }}</p>
+
+            <!-- Botão para abrir o modal de edição -->
+            <button @click="openEditModal(atividade)" class="btn-edit">Editar</button>
+            
+            <!-- Botão para excluir a atividade -->
+            <button @click="deleteAtividade(atividade.id)" class="btn-delete">Excluir</button>
+        </li>
+    </ul>
+</div>
+
             </div>
 
             <!-- Modal de Alunos -->
@@ -134,6 +141,47 @@
                     </form>
                 </div>
             </div>
+
+            <div v-if="isAtividadeModalOpen" class="modal">
+    <div class="modal-content">
+        <span class="close" @click="closeAtividadeModal">&times;</span>
+        <h2>Editar Atividade</h2>
+        <form @submit.prevent="updateAtividade" class="form-container">
+            <div class="form-group">
+                <label for="titulo">Título:</label>
+                <input
+                    type="text"
+                    id="titulo"
+                    v-model="currentAtividade.titulo"
+                    required
+                />
+            </div>
+
+            <div class="form-group">
+                <label for="descricao">Descrição:</label>
+                <textarea
+                    id="descricao"
+                    v-model="currentAtividade.descricao"
+                    required
+                ></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="dataEntrega">Data de Entrega:</label>
+                <input
+                    type="date"
+                    id="dataEntrega"
+                    v-model="currentAtividade.dataEntrega"
+                    required
+                />
+            </div>
+
+            <button type="submit" class="submit-btn">Salvar Alterações</button>
+        </form>
+    </div>
+</div>
+
+
 </template>
 
 <script setup>
@@ -157,6 +205,31 @@ const alunos = ref([]);
 const currentAluno = ref({});
 const search = ref('');
 
+
+
+const openEditModal = (atividade) => {
+    currentAtividade.value = { ...atividade };
+    isAtividadeModalOpen.value = true; // Abrir o modal de edição
+};
+
+const updateAtividade = async () => {
+    try {
+        await axios.put(`/atividades/${currentAtividade.value.id}`, currentAtividade.value);
+        fetchAtividades(); // Atualizar a lista de atividades
+        closeAtividadeModal();
+    } catch (error) {
+        console.error('Erro ao editar atividade:', error);
+    }
+};
+
+const deleteAtividade = async (id) => {
+    try {
+        await axios.delete(`/atividades/${id}`);
+        fetchAtividades(); // Atualizar a lista de atividades
+    } catch (error) {
+        console.error('Erro ao excluir atividade:', error);
+    }
+};
 
 const toggleAtividades = () => {
     showAtividades.value = !showAtividades.value;
@@ -662,6 +735,32 @@ select {
     font-weight: bold;
     color: #F29400;
     margin-left: 20px; /* Adiciona afastamento do canto direito da tela */
+}
+.btn-edit {
+    background-color: #4CAF50; /* Verde para edição */
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    margin-right: 8px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.btn-edit:hover {
+    background-color: #45a049;
+}
+
+.btn-delete {
+    background-color: #f44336; /* Vermelho para exclusão */
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.btn-delete:hover {
+    background-color: #d32f2f;
 }
 
 

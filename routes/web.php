@@ -101,6 +101,9 @@ Route::put('/aluno/projeto/{id}', [ProjetoController::class, 'update'])->name('p
 Route::get('/atividades', [AtividadeController::class, 'index']);
 Route::post('/atividades', [AtividadeController::class, 'store']);
 Route::post('/atividades/{id}/submeter-link', [AtividadeController::class, 'submeterLink']);
+Route::put('/atividades/{id}', [AtividadeController::class, 'update'])->name('atividades.update');
+Route::delete('/atividades/{id}', [AtividadeController::class, 'destroy']); // Rota para excluir
+
 
 // Rota de recuperação de senha para alunos
 Route::get('/forgotPasswordAluno', function () {

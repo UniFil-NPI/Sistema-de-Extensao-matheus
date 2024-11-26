@@ -17,11 +17,18 @@ class Atividade extends Model
         'concluida',
         'created_at',
         'updated_at',
-        'link'
+        'link',
+        'ativo',
     ];
 
     // Defina os valores padrão para campos não obrigatórios
     protected $attributes = [
         'concluida' => false,
     ];
+
+    public function scopeAtivas($query)
+{
+    return $query->where('ativo', true);
+}
+
 }

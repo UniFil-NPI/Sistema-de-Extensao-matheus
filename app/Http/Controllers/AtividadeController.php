@@ -10,10 +10,34 @@ class AtividadeController extends Controller
 {
     public function index()
     {
-        // Retorna apenas as atividades com data de entrega a partir de hoje
-        $atividades = Atividade::where('dataEntrega', '>=', Carbon::today()->toDateString())->get();
-        return response()->json($atividades);
+        // Retorna apenas atividades ativas
+    $atividades = Atividade::ativas()->where('dataEntrega', '>=', now()->toDateString())->get();
+    return response()->json($atividades);
     }
+
+    public function destroy($id)
+{
+    $atividade = Atividade::findOrFail($id);
+    $atividade->update(['ativo' => false]); // Atualiza o campo 'ativo' para false
+    return response()->json(['message' => 'Atividade ocultada com sucesso.'], 200);
+}
+
+
+public function update(Request $request, $id)
+{
+    $atividade = Atividade::findOrFail($id);
+
+    $request->validate([
+        'titulo' => 'required|string|max:255',
+        'descricao' => 'required|string',
+        'dataEntrega' => 'required|date|after_or_equal:today',
+    ]);
+
+    $atividade->update($request->only('titulo', 'descricao', 'dataEntrega'));
+
+    return response()->json($atividade, 200);
+}
+
 
     public function store(Request $request)
     {
