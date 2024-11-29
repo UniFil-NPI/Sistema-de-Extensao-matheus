@@ -29,8 +29,8 @@
               v-model="editarObjetivo[index]" 
               placeholder="Editar Objetivo"
             />
-            <button @click="salvarObjetivo(index)">Salvar</button>
-            <button @click="removerObjetivo(index)">Excluir</button>
+            <button @click="salvarObjetivo(index)"class="save-btn">Salvar</button>
+            <button @click="removerObjetivo(index)"class="btn-excluir">Excluir</button>
           </div>
           <div v-else>
             {{ objetivo }}
@@ -43,7 +43,7 @@
         </li>
       </ul>
       <input v-model="novoObjetivo" placeholder="Adicionar Objetivo" />
-      <button @click="adicionarObjetivo">Adicionar</button>
+      <button @click="adicionarObjetivo">Adicionar </button>
     </section>
 
     <section class="portfolio-section">
@@ -56,8 +56,8 @@
               v-model="editarTecnologia[index]" 
               placeholder="Editar Tecnologia"
             />
-            <button @click="salvarTecnologia(index)">Salvar</button>
-            <button @click="removerTecnologia(index)">Excluir</button>
+            <button @click="salvarTecnologia(index)"class="save-btn">Salvar</button>
+            <button @click="removerTecnologia(index)"class="btn-excluir">Excluir</button>
           </div>
           <div v-else>
             {{ tecnologia }}
@@ -83,8 +83,8 @@
               v-model="editarEtapa[index]" 
               placeholder="Editar Etapa"
             />
-            <button @click="salvarEtapa(index)">Salvar</button>
-            <button @click="removerEtapa(index)">Excluir</button>
+            <button @click="salvarEtapa(index)"class="save-btn">Salvar</button>
+            <button @click="removerEtapa(index)"class="btn-excluir">Excluir</button>
           </div>
           <div v-else>
             {{ etapa }}
@@ -110,8 +110,8 @@
               v-model="editarInformacao[index]" 
               placeholder="Editar Informação Avulsa"
             ></textarea>
-            <button @click="salvarInformacao(index)">Salvar</button>
-            <button @click="removerInformacao(index)">Excluir</button>
+            <button @click="salvarInformacao(index)"class="save-btn">Salvar</button>
+            <button @click="removerInformacao(index)"class="btn-excluir">Excluir</button>
           </div>
           <div v-else>
             {{ info }}
@@ -289,6 +289,9 @@ const removerInformacao = (index) => {
   checklist.value.informacoes_avulsas.splice(index, 1);
 };
 
+const notification = ref('');
+
+
 const salvarProjeto = () => {
   if (!projeto.value.id) {
     console.error("ID do projeto não encontrado.");
@@ -298,11 +301,25 @@ const salvarProjeto = () => {
   axios.put(`/aluno/projeto/${projeto.value.id}`, projeto.value)
     .then(response => {
       console.log("Projeto atualizado com sucesso", response);
+
+      // Criar a notificação
+      const notification = document.createElement('div');
+      notification.innerText = 'Projeto salvo com sucesso!';
+      notification.classList.add('notification-success');
+
+      // Adicionar a notificação ao corpo da página
+      document.body.appendChild(notification);
+
+      // Remover a notificação após 3 segundos
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
     })
     .catch(error => {
       console.error("Erro ao salvar o projeto:", error);
     });
 };
+
 </script>
 
 
@@ -440,7 +457,7 @@ button:hover {
 .save-btn {
   margin-top: 10px;
   padding: 8px 12px;
-  background-color: #F29400;
+  background-color: #00790a;
   color: #ffffff;
   border: none;
   border-radius: 4px;
@@ -450,7 +467,7 @@ button:hover {
 }
 
 .save-btn:hover {
-  background-color: #F29400;
+  background-color: #14f200;
 }
 
 
@@ -477,8 +494,51 @@ button:hover {
   margin-top: 5px;
 }
 
+.notification-success {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 5px;
+  font-size: 14px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  opacity: 0;
+  animation: fadeInOut 3s forwards;
+}
 
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  10%, 90% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
 
+.btn-excluir {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background-color: #e60013;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.btn-excluir:hover{
+  background-color: #ff1f1f;
+}
 
 </style>
 

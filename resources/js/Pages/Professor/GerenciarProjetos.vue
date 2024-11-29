@@ -33,19 +33,23 @@
   <!-- Modal de Avaliação -->
 <div v-if="mostrarModal" class="modal-overlay">
   <div class="modal-content">
-    <h3>Avaliar Projeto</h3>
-    <p><strong>Título:</strong> {{ projetoSelecionado?.titulo }}</p>
-    <p><strong>Aluno:</strong> {{ projetoSelecionado?.nomeAluno }}</p>
+    <h3 class="modal-title">Avaliar Projeto</h3>
     
-    <label for="nota">Nota:</label>
-    <input v-model="nota" type="number" step="0.1" min="0" max="10" />
-
+    <div class="modal-body">
+      <p><strong>Título:</strong> {{ projetoSelecionado?.titulo }}</p>
+      <p><strong>Aluno:</strong> {{ projetoSelecionado?.nomeAluno }}</p>
+      
+      <label for="nota">Nota:</label>
+      <input v-model="nota" type="number" id="nota" step="0.1" min="0" max="10" />
+    </div>
+    
     <div class="modal-buttons">
-      <button @click="salvarNota">Salvar</button>
-      <button @click="fecharModal">Cancelar</button>
+      <button @click="salvarNota" class="btn btn-save">Salvar</button>
+      <button @click="fecharModal" class="btn btn-cancel">Cancelar</button>
     </div>
   </div>
 </div>
+
 
 </template>
 
@@ -125,6 +129,7 @@ function salvarNota() {
       onSuccess: () => {
         // Atualiza a nota no frontend
         projetoSelecionado.value.nota = nota.value;
+        fetchProjects();
         fecharModal();
       },
     });
@@ -132,6 +137,7 @@ function salvarNota() {
 </script>
 
 <style scoped>
+/* Estilos para o modal */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -142,21 +148,81 @@ function salvarNota() {
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 1000;
 }
 
 .modal-content {
   background: white;
   padding: 20px;
-  border-radius: 8px;
-  width: 300px;
+  border-radius: 10px;
+  width: 350px;
+  max-width: 90%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: left;
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: #333;
   text-align: center;
 }
 
+.modal-body p {
+  margin: 10px 0;
+  font-size: 1rem;
+}
+
+label {
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+input[type="number"] {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+/* Botões */
 .modal-buttons {
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
 }
+
+.btn {
+  padding: 10px 15px;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.btn-save {
+  background-color: #4caf50;
+  color: white;
+}
+
+.btn-save:hover {
+  background-color: #45a049;
+}
+
+.btn-cancel {
+  background-color: #f44336;
+  color: white;
+}
+
+.btn-cancel:hover {
+  background-color: #d32f2f;
+}
+
 
 
 

@@ -13,7 +13,6 @@
                 <button type="submit">Entrar</button>
             </form>
             <button @click="redirectToForgotPassword" class="forgot-password">Esqueci minha senha</button>
-            <input type="checkbox" name="remember"> Lembrar-me
         </div>
     </div>
 </template>
@@ -103,6 +102,7 @@ input {
     border-radius: 4px;
     width: calc(100% - 20px);
     box-sizing: border-box;
+    width: 100%; 
 }
 
 button {
@@ -112,6 +112,7 @@ button {
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    width: 100%;
 }
 
 button:hover {

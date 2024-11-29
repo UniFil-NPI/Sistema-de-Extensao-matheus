@@ -13,6 +13,9 @@
                 <span>Bem-vindo, Professor(a)</span>
             </div>
 
+            <!-- Adicione o botão de Logout no canto superior direito -->
+            <button class="logout-button" @click="handleLogout">Logout</button>
+
         <!-- Conteúdo principal -->
         <div class="container">
             <!-- Barra lateral -->
@@ -205,7 +208,10 @@ const alunos = ref([]);
 const currentAluno = ref({});
 const search = ref('');
 
-
+const handleLogout = () => {
+  // Redireciona para a página welcome.vue
+  window.location.href = "/";
+};
 
 const openEditModal = (atividade) => {
     currentAtividade.value = { ...atividade };
@@ -762,6 +768,26 @@ select {
 .btn-delete:hover {
     background-color: #d32f2f;
 }
+
+/* Estilo do botão de logout */
+.logout-button {
+  position: fixed; /* Fixa o botão no canto superior direito */
+  top: 10px; /* Distância do topo */
+  right: 10px; /* Distância da borda direita */
+  background-color: #ff4d4d; /* Cor do botão */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); /* Sombra para destaque */
+}
+
+.logout-button:hover {
+  background-color: #e63939; /* Cor ao passar o mouse */
+}
+
 
 
 </style>
